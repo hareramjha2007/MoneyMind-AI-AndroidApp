@@ -25,10 +25,11 @@ data class CoachUiState(
     val messages: List<CoachMessage> = emptyList(),
     val isStreaming: Boolean = false,
     val suggestedChips: List<String> = listOf(
-        "Why aren't my savings growing?",
-        "Shall I buy Macbook now?",
-        "How much did I spend on food this month?",
-        "Am I on track for my emergency fund?"
+        "💡 Can I afford a MacBook Pro?",
+        "📉 Why did my Financial Health Score drop?",
+        "✂️ Which subscription should I cancel?",
+        "🚀 How do I boost my score above 85?",
+        "🍔 How much did I spend on food delivery?"
     )
 )
 

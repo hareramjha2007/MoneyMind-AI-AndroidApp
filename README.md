@@ -2,7 +2,7 @@
 
 > **"Understand your money. Improve your future."**
 
-MoneyMind AI is a production-grade, privacy-first Android application that passively understands a user's financial life from bank, UPI, and expense tracker notifications. It calculates a real-time **Financial Health Score (0–100)**, surfaces behavioral spending insights, subscription radar tracking, interactive goal projections, line-by-line expense drill-downs, an interactive 6-step setup questionnaire, native biometric app lock, and an AI financial coach — **without ever asking the user to manually log a single expense**.
+MoneyMind AI is a production-grade, privacy-first Android application that passively understands a user's financial life from bank, UPI, and expense tracker notifications. It calculates a real-time **Financial Health Score (0–100)**, surfaces behavioral spending insights, subscription radar tracking, interactive goal projections, line-by-line expense drill-downs, an interactive 6-step setup questionnaire, "Can I Afford This?" purchase simulator, native biometric app lock, and an AI financial coach — **without ever asking the user to manually log a single expense**.
 
 ---
 
@@ -35,7 +35,19 @@ MoneyMind AI is positioned strictly as a **Behavioral Financial Guidance & Aware
 * Extracts amount, merchant/counterparty, category, account last 4 digits, and transaction type (Debit/Credit).
 * Built-in support for popular expense tracker notifications (Axio, Walnut, Fold, Spendee).
 
-### 🔹 Interactive 6-Step Financial Setup Questionnaire
+### 🔹 "Can I Afford This?" Purchase Impact Simulator (`AffordabilitySimulatorSheet.kt`)
+* Interactive decision tool rendered on Home Screen under the Hero Score Gauge.
+* Simulates the exact financial impact of major purchases (e.g. *MacBook Pro M3 - ₹1,49,900* or *iPhone 16 Pro - ₹1,29,900*) before buying:
+  - **Health Score Drop**: Calculates projected score change (e.g., `85 ➔ 74`, `-11 pts`).
+  - **Emergency Reserve Runway**: Calculates remaining liquid runway (e.g., `5.8 months ➔ 3.2 months`).
+  - **Smart Verdict Badge**: Displays `✅ Safe to Purchase`, `⚠️ Moderate Impact (Wait 30 Days)`, or `🚨 High Risk: Drains Emergency Reserve`.
+  - **1-Tap Goal Conversion**: Direct button to convert the simulated item into a long-term Savings Goal.
+
+### 🔹 Life Goal Smart Presets & Milestone Celebration Badges
+* **1-Tap Smart Presets**: Auto-fills title & target amount for popular life goals (*MacBook Pro M3*, *iPhone 16 Pro*, *Emergency Reserve*, *Electric Vehicle*, *Dream Vacation*).
+* **Milestone Celebrations**: Renders visual progress badges on goal cards for `25%`, `50%`, `75%`, and `🏆 100% Goal Achieved` milestones.
+
+### 🔹 Interactive 6-Step Financial Setup Questionnaire & Persistence
 * Captures baseline financial metrics on first launch:
   1. **Welcome & Privacy Commitment** (100% Encrypted & Local Vault)
   2. **Monthly In-Hand Income** (Quick-select chips + numeric input)
@@ -54,33 +66,30 @@ MoneyMind AI is positioned strictly as a **Behavioral Financial Guidance & Aware
   5. **Subscription Waste (15%)**: Active vs unwanted recurring monthly charges.
 * **Day 1 Score Gauge**: Even before bank notifications arrive, MoneyMind AI calculates your baseline health score from setup responses so the Hero Score Gauge Card is displayed immediately.
 
-### 🔹 Editable Financial Vault Data Screen
-* Access setup figures anytime via the **Top-Left Profile Button (`👤`)** or Vault Data tab.
+### 🔹 Editable Financial Vault Data Screen & Top-Left Profile Icon (`👤`)
+* Access setup figures anytime via the **Top-Left Profile Button (`👤`)** on any main screen.
 * Tap any baseline figure (Salary, Emergency Reserve, Insurance, EMIs) to edit it inline anytime **without re-running onboarding**.
+
+### 🔹 Streamlined 4-Tab Navigation & Back Button App Exit
+* Clean 4-tab bottom navigation bar: **Home**, **Insights**, **Goals**, **Coach**.
+* **Clean System Back Exit**: Added `BackHandler` on `HomeScreen` so pressing the system Back button closes/exits the application cleanly instead of popping back to onboarding.
 
 ### 🔹 Native Biometric App Lock (`BiometricAuthHelper`)
 * Integrated Android `androidx.biometric.BiometricPrompt`.
 * Protects financial vault data with fingerprint, face unlock, or device PIN.
 * App launch gate presents a secure lock screen overlay until authentication succeeds.
 
-### 🔹 4-Tab Streamlined Navigation & Top-Left Profile Icon
-* Clean 4-tab bottom navigation bar: **Home**, **Insights**, **Goals**, **Coach**.
-* Universal **Top-Left Profile Icon Button (`👤`)** on every screen for 1-tap vault access.
-
-### 🔹 Category Expense Breakdown & Line-by-Line Drill-Down
-* **Category Breakdown**: Proportional visual bars for Food & Dining, Shopping, Fuel, Utilities, Subscriptions, and Debt & EMI.
-* **Line-by-Line Drill-Down Sheet**: Interactive **"Drill Down"** modal view displaying every parsed notification line-by-line with timestamps, merchant name, category badge, source app, and exact green/red credit/debit amounts.
-
-### 🔹 Subscription Radar & Expense Insights
-* Automatically flags recurring monthly charges and identifies under-utilized subscriptions.
-* Toggling subscriptions as **"Unwanted"** dynamically recalculates your Subscription Waste score and updates AI Coach advice in real-time.
-
-### 🔹 Conversational AI Financial Coach (`MoneyMind AI`)
+### 🔹 Conversational AI Financial Coach & High-Intent Prompt Pills
 * Chat interface with streaming AI responses powered by **Google Gemini 3.6 Flash**.
-* Ingests setup metrics (Salary, Insurance, Emergency Reserve, Goals) to provide tailored behavioral financial guidance.
+* Includes 1-tap question prompt pills:
+  - `💡 Can I afford a MacBook Pro?`
+  - `📉 Why did my Financial Health Score drop?`
+  - `✂️ Which subscription should I cancel?`
+  - `🚀 How do I boost my score above 85?`
 * Strict safety guardrails: zero investment advice, zero stock picks, zero numeric return promises.
 
-### 🔹 14-Day Free Trial Default & 1-Click Data Erasure
+### 🔹 Brand Identity, Vector Launcher Icon & 14-Day Free Trial Default
+* Mobile Launcher Icon (`ic_launcher_foreground.xml`) featuring the **Hastradar Financial AI Emblem** (Concentric Pulse Rings + Upward Financial Growth Arrow + AI Spark Star).
 * Default subscription plan is **14-Day Free Trial (Full Access)**.
 * **Clear Local Encrypted Database** button in Settings purges all Room database tables instantly.
 
@@ -92,15 +101,15 @@ The project is structured according to **Google's Recommended Android Architectu
 
 ```
 MoneyMind AI Architecture
-├── :app (Application entry, Navigation Host, Splash Screen, Biometric Gate, Hilt Root)
+├── :app (Application entry, Navigation Host, Animated Splash Screen, Biometric Gate, Launcher Icons, Hilt Root)
 ├── :core-domain (Models, Use Cases, Repository Interfaces, AI Interfaces, Billing Enums)
 ├── :core-data (Room Database, SQLCipher, DAOs, Notification Listener, UserPreferencesRepository, BiometricAuthHelper, Gemini AI Engine)
-├── :core-ui (Design System, Tokens, Components, Hastradar Logo, Theme, Paywall Sheet)
-├── :feature-home (Home Screen, Financial Health Score Gauge, Dynamic AI Monthly Strategy)
+├── :core-ui (Design System, Tokens, Components, Hastradar Emblem, Affordability Simulator, Theme, Paywall Sheet)
+├── :feature-home (Home Screen, Score Gauge Card, Can I Afford This Simulator Card, Dynamic AI Strategy, BackHandler Exit)
 ├── :feature-insights (Behavioral Insights, Score Factors Breakdown, Subscription Radar, Expense Drill-Down Sheet)
-├── :feature-goals (Goal List, Add Goal Modal, Target Projections)
-├── :feature-coach (AI Coach Chat Screen, Gemini 3.6 Flash Integration)
-└── :feature-profile (Financial Vault Data Editor, Biometric Lock Toggle, Database Erasure Flow)
+├── :feature-goals (Goal List, Milestone Badges, Smart Preset Autofill, Add Goal Modal, Target Projections)
+├── :feature-coach (AI Coach Chat Screen, High-Intent Prompt Pills, Gemini 3.6 Flash Integration)
+└── :feature-profile (Financial Vault Data Editor, Inline Metric Editing, Biometric Lock Toggle, Database Erasure Flow)
 ```
 
 ---

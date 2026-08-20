@@ -123,7 +123,7 @@ class HomeViewModel @Inject constructor(
                     listOf(
                         "No bank notifications parsed yet",
                         "MoneyMind AI will automatically track expenses as notifications arrive",
-                        "Tap Vault Data (5th tab) or Goals to manage your baseline targets"
+                        "Tap top-left Profile icon (👤) or Goals tab to manage your baseline targets"
                     )
                 }
 

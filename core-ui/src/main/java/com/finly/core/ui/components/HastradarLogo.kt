@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.MaterialTheme
@@ -29,11 +28,10 @@ import com.finly.core.ui.theme.AccentCyan
 import com.finly.core.ui.theme.AccentPurple
 import com.finly.core.ui.theme.PrimaryIndigo
 import com.finly.core.ui.theme.ScoreExcellent
-import com.finly.core.ui.theme.TextMutedDark
 
 /**
- * Hastradar Monogram Emblem Component
- * Renders the official Hastradar metallic emblem (Deep Navy H, Emerald Green C, Cyan S & sweeping arcs)
+ * Premium Hastradar Financial AI Emblem Component
+ * Combines Hastradar Orbital Radar Rings, Upward Financial Growth Arrow, and AI Spark.
  */
 @Composable
 fun HastradarEmblem(
@@ -45,91 +43,84 @@ fun HastradarEmblem(
         val height = this.size.height
         val center = Offset(width / 2f, height / 2f)
 
-        // Arc Gradients
-        val navyGradient = Brush.sweepGradient(
-            listOf(Color(0xFF0F1E3D), Color(0xFF1E3A8A), Color(0xFF3B82F6), Color(0xFF0F1E3D))
+        val strokeWidth = width * 0.08f
+
+        // Gradients
+        val radarGradient = Brush.sweepGradient(
+            colors = listOf(
+                Color(0xFF00F2FE), // Cyan
+                Color(0xFF4FACFE), // Blue
+                Color(0xFF7000FF), // Violet
+                Color(0xFF00F2FE)  // Cyan
+            )
         )
-        val greenTealGradient = Brush.linearGradient(
-            colors = listOf(Color(0xFF10B981), Color(0xFF06B6D4), Color(0xFF0D9488)),
+        val growthGradient = Brush.linearGradient(
+            colors = listOf(Color(0xFF10B981), Color(0xFF34D399), Color(0xFF059669)),
             start = Offset(0f, height),
             end = Offset(width, 0f)
         )
-        val greenGradient = Brush.verticalGradient(
-            colors = listOf(Color(0xFF34D399), Color(0xFF059669))
+        val sparkGradient = Brush.radialGradient(
+            colors = listOf(Color(0xFFD8B4FE), Color(0xFFA855F7), Color(0xFF7E22CE)),
+            center = Offset(width * 0.5f, height * 0.28f),
+            radius = width * 0.25f
         )
 
-        val strokeWidth = width * 0.075f
-
-        // 1. Outer Deep Navy Sweeping Top Arc
+        // 1. Outer Hastradar Concentric Pulse Rings
         drawArc(
-            brush = navyGradient,
-            startAngle = 180f,
-            sweepAngle = 140f,
+            brush = radarGradient,
+            startAngle = -30f,
+            sweepAngle = 280f,
             useCenter = false,
             style = Stroke(width = strokeWidth, cap = StrokeCap.Round),
-            topLeft = Offset(width * 0.05f, height * 0.05f),
-            size = Size(width * 0.9f, height * 0.9f)
+            topLeft = Offset(width * 0.06f, height * 0.06f),
+            size = Size(width * 0.88f, height * 0.88f)
         )
 
-        // 2. Outer Emerald Sweeping Bottom Right Arc
         drawArc(
-            brush = greenTealGradient,
-            startAngle = 0f,
-            sweepAngle = 150f,
+            brush = radarGradient,
+            startAngle = 140f,
+            sweepAngle = 180f,
             useCenter = false,
-            style = Stroke(width = strokeWidth, cap = StrokeCap.Round),
-            topLeft = Offset(width * 0.08f, height * 0.08f),
-            size = Size(width * 0.84f, height * 0.84f)
+            style = Stroke(width = strokeWidth * 0.6f, cap = StrokeCap.Round),
+            topLeft = Offset(width * 0.18f, height * 0.18f),
+            size = Size(width * 0.64f, height * 0.64f)
         )
 
-        // 3. Monogram 'H' Left Pillar & Bar
-        val hPath = Path().apply {
-            // Left Serif Pillar
-            moveTo(width * 0.16f, height * 0.28f)
-            lineTo(width * 0.28f, height * 0.28f)
-            moveTo(width * 0.22f, height * 0.28f)
-            lineTo(width * 0.22f, height * 0.74f)
-            moveTo(width * 0.16f, height * 0.74f)
-            lineTo(width * 0.28f, height * 0.74f)
-            // Cross Bar
-            moveTo(width * 0.22f, height * 0.50f)
-            lineTo(width * 0.42f, height * 0.50f)
+        // 2. Upward Financial Growth Arrow Path
+        val arrowPath = Path().apply {
+            moveTo(width * 0.26f, height * 0.72f)
+            lineTo(width * 0.44f, height * 0.54f)
+            lineTo(width * 0.56f, height * 0.62f)
+            lineTo(width * 0.76f, height * 0.36f)
+
+            // Arrowhead tip
+            moveTo(width * 0.64f, height * 0.36f)
+            lineTo(width * 0.78f, height * 0.34f)
+            lineTo(width * 0.76f, height * 0.50f)
         }
+
         drawPath(
-            path = hPath,
-            brush = navyGradient,
-            style = Stroke(width = strokeWidth * 0.9f, cap = StrokeCap.Square)
+            path = arrowPath,
+            brush = growthGradient,
+            style = Stroke(width = strokeWidth * 1.1f, cap = StrokeCap.Round)
         )
 
-        // 4. Monogram 'C' Inner Green Curve
-        drawArc(
-            brush = greenGradient,
-            startAngle = 100f,
-            sweepAngle = 160f,
-            useCenter = false,
-            style = Stroke(width = strokeWidth * 0.85f, cap = StrokeCap.Round),
-            topLeft = Offset(width * 0.32f, height * 0.28f),
-            size = Size(width * 0.40f, height * 0.46f)
-        )
+        // 3. AI Spark Star at Center Top
+        val sparkPath = Path().apply {
+            val cx = width * 0.5f
+            val cy = height * 0.28f
+            val rOuter = width * 0.12f
 
-        // 5. Monogram 'S' Teal Swirl
-        val sPath = Path().apply {
-            moveTo(width * 0.72f, height * 0.34f)
-            cubicTo(
-                width * 0.50f, height * 0.24f,
-                width * 0.45f, height * 0.48f,
-                width * 0.62f, height * 0.54f
-            )
-            cubicTo(
-                width * 0.78f, height * 0.60f,
-                width * 0.72f, height * 0.78f,
-                width * 0.48f, height * 0.74f
-            )
+            moveTo(cx, cy - rOuter)
+            quadraticBezierTo(cx, cy, cx + rOuter, cy)
+            quadraticBezierTo(cx, cy, cx, cy + rOuter)
+            quadraticBezierTo(cx, cy, cx - rOuter, cy)
+            quadraticBezierTo(cx, cy, cx, cy - rOuter)
         }
+
         drawPath(
-            path = sPath,
-            brush = greenTealGradient,
-            style = Stroke(width = strokeWidth, cap = StrokeCap.Round)
+            path = sparkPath,
+            brush = sparkGradient
         )
     }
 }

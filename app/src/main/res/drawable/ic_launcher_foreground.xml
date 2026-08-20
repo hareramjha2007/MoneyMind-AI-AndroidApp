@@ -5,101 +5,66 @@
     android:viewportWidth="108"
     android:viewportHeight="108">
 
-    <!-- 1. Outer Sweeping Navy-Indigo Top Arc -->
+    <!-- 1. Outer Hastradar Concentric Pulse Ring (Cyan-Violet) -->
     <path
-        android:pathData="M 22,54 A 32,32 0 0,1 86,30"
-        android:strokeWidth="7.5"
+        android:pathData="M 22,54 A 32,32 0 1,1 78,28"
+        android:strokeWidth="7"
         android:strokeLineCap="round">
         <aapt:attr name="android:strokeColor">
             <gradient
                 android:startX="22"
                 android:startY="54"
-                android:endX="86"
-                android:endY="30"
+                android:endX="78"
+                android:endY="28"
                 android:type="linear">
-                <item android:color="#FF38BDF8" android:offset="0.0"/>
-                <item android:color="#FF818CF8" android:offset="0.5"/>
-                <item android:color="#FF6366F1" android:offset="1.0"/>
+                <item android:color="#FF00F2FE" android:offset="0.0"/>
+                <item android:color="#FF4FACFE" android:offset="0.5"/>
+                <item android:color="#FFA855F7" android:offset="1.0"/>
             </gradient>
         </aapt:attr>
     </path>
 
-    <!-- 2. Outer Sweeping Emerald-Cyan Bottom Arc -->
+    <!-- 2. Inner Hastradar Radar Pulse Arc -->
     <path
-        android:pathData="M 86,54 A 32,32 0 0,1 26,78"
-        android:strokeWidth="7.5"
+        android:pathData="M 34,66 A 20,20 0 0,1 66,34"
+        android:strokeWidth="4"
         android:strokeLineCap="round">
         <aapt:attr name="android:strokeColor">
             <gradient
-                android:startX="86"
-                android:startY="54"
-                android:endX="26"
-                android:endY="78"
+                android:startX="34"
+                android:startY="66"
+                android:endX="66"
+                android:endY="34"
                 android:type="linear">
-                <item android:color="#FF10B981" android:offset="0.0"/>
-                <item android:color="#FF06B6D4" android:offset="0.7"/>
-                <item android:color="#FF34D399" android:offset="1.0"/>
-            </gradient>
-        </aapt:attr>
-    </path>
-
-    <!-- 3. Monogram 'H' Left Serif & Crossbar -->
-    <path
-        android:pathData="M 30,34 L 40,34 M 35,34 L 35,74 M 30,74 L 40,74 M 35,54 L 53,54"
-        android:strokeWidth="6.5"
-        android:strokeLineCap="square">
-        <aapt:attr name="android:strokeColor">
-            <gradient
-                android:startX="30"
-                android:startY="34"
-                android:endX="53"
-                android:endY="74"
-                android:type="linear">
-                <item android:color="#FFC7D2FE" android:offset="0.0"/>
+                <item android:color="#FF38BDF8" android:offset="0.0"/>
                 <item android:color="#FF818CF8" android:offset="1.0"/>
             </gradient>
         </aapt:attr>
     </path>
 
-    <!-- 4. Monogram 'C' Inner Green Curve -->
+    <!-- 3. Upward Financial Growth Arrow -->
     <path
-        android:pathData="M 70,36 A 18,18 0 0,0 52,54 A 18,18 0 0,0 70,72"
-        android:strokeWidth="6"
-        android:strokeLineCap="round">
+        android:pathData="M 32,70 L 48,54 L 58,62 L 78,36 M 66,36 L 79,34 L 77,48"
+        android:strokeWidth="7"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round">
         <aapt:attr name="android:strokeColor">
             <gradient
-                android:startX="52"
-                android:startY="36"
-                android:endX="70"
-                android:endY="72"
+                android:startX="32"
+                android:startY="70"
+                android:endX="78"
+                android:endY="34"
                 android:type="linear">
-                <item android:color="#FF34D399" android:offset="0.0"/>
+                <item android:color="#FF10B981" android:offset="0.0"/>
+                <item android:color="#FF34D399" android:offset="0.6"/>
                 <item android:color="#FF059669" android:offset="1.0"/>
             </gradient>
         </aapt:attr>
     </path>
 
-    <!-- 5. Monogram 'S' Teal-Cyan Swirl -->
+    <!-- 4. AI Spark Star at Top Center -->
     <path
-        android:pathData="M 74,40 C 60,30 52,48 68,54 C 84,60 76,78 60,74"
-        android:strokeWidth="6.5"
-        android:strokeLineCap="round">
-        <aapt:attr name="android:strokeColor">
-            <gradient
-                android:startX="52"
-                android:startY="30"
-                android:endX="84"
-                android:endY="78"
-                android:type="linear">
-                <item android:color="#FF06B6D4" android:offset="0.0"/>
-                <item android:color="#FF38BDF8" android:offset="1.0"/>
-            </gradient>
-        </aapt:attr>
-    </path>
-
-    <!-- AI Sparkle Icon accent top right -->
-    <path
-        android:pathData="M 78,24 L 80,29 L 85,31 L 80,33 L 78,38 L 76,33 L 71,31 L 76,29 Z"
-        android:fillColor="#FFEC4899" />
+        android:pathData="M 54,20 C 54,26 59,30 64,30 C 59,30 54,34 54,40 C 54,34 49,30 44,30 C 49,30 54,26 54,20 Z"
+        android:fillColor="#FFD8B4FE" />
 
 </vector>

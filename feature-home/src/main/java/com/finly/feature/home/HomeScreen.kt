@@ -19,6 +19,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.AccountCircle
 import androidx.compose.material.icons.rounded.AutoAwesome
+import androidx.compose.material.icons.rounded.Calculate
 import androidx.compose.material.icons.rounded.ChevronRight
 import androidx.compose.material.icons.rounded.Insights
 import androidx.compose.material3.Card
@@ -31,6 +32,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -44,7 +48,12 @@ import com.finly.core.ui.theme.AccentPurple
 import com.finly.core.ui.theme.CardNavy
 import com.finly.core.ui.theme.DeepNavy
 import com.finly.core.ui.theme.PrimaryIndigo
+import com.finly.core.ui.theme.TextMutedDark
 import com.finly.core.ui.theme.TextSecondaryDark
+
+import androidx.activity.compose.BackHandler
+import androidx.compose.ui.platform.LocalContext
+import android.app.Activity
 
 @Composable
 fun HomeScreen(
@@ -54,7 +63,16 @@ fun HomeScreen(
     onNavigateToProfile: () -> Unit = {},
     viewModel: HomeViewModel = hiltViewModel()
 ) {
+    val context = LocalContext.current
+
+    // Back button closes app cleanly from Home Screen
+    BackHandler {
+        (context as? Activity)?.finish()
+    }
+
     val state by viewModel.uiState.collectAsState()
+
+    var showSimulatorSheet by remember { mutableStateOf(false) }
 
     Column(
         modifier = Modifier
@@ -123,7 +141,7 @@ fun HomeScreen(
             }
         }
 
-        Spacer(modifier = Modifier.height(24.dp))
+        Spacer(modifier = Modifier.height(20.dp))
 
         // Hero Score Gauge
         state.score?.let { scoreObj ->
@@ -133,7 +151,62 @@ fun HomeScreen(
             )
         }
 
-        Spacer(modifier = Modifier.height(24.dp))
+        Spacer(modifier = Modifier.height(16.dp))
+
+        // "Can I Afford This?" Purchase Impact Simulator Card
+        Card(
+            modifier = Modifier
+                .fillMaxWidth()
+                .clip(RoundedCornerShape(18.dp))
+                .clickable { showSimulatorSheet = true },
+            colors = CardDefaults.cardColors(containerColor = CardNavy)
+        ) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Box(
+                    modifier = Modifier
+                        .size(42.dp)
+                        .clip(RoundedCornerShape(12.dp))
+                        .background(PrimaryIndigo.copy(alpha = 0.2f)),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        imageVector = androidx.compose.material.icons.Icons.Rounded.Calculate,
+                        contentDescription = null,
+                        tint = PrimaryIndigo,
+                        modifier = Modifier.size(24.dp)
+                    )
+                }
+
+                Spacer(modifier = Modifier.width(14.dp))
+
+                Column(modifier = Modifier.weight(1f)) {
+                    Text(
+                        text = "Can I Afford This?",
+                        style = MaterialTheme.typography.titleMedium,
+                        color = Color.White,
+                        fontWeight = FontWeight.Bold
+                    )
+                    Text(
+                        text = "Simulate purchase impact on score & reserve runway",
+                        style = MaterialTheme.typography.labelSmall,
+                        color = TextSecondaryDark
+                    )
+                }
+
+                Icon(
+                    imageVector = Icons.Rounded.ChevronRight,
+                    contentDescription = null,
+                    tint = TextMutedDark
+                )
+            }
+        }
+
+        Spacer(modifier = Modifier.height(20.dp))
 
         // AI Insight Card
         if (state.aiInsightText.isNotBlank()) {
@@ -263,5 +336,16 @@ fun HomeScreen(
                 modifier = Modifier.clickable { onNavigateToTransactions() }
             )
         }
+    }
+
+    if (showSimulatorSheet) {
+        com.finly.core.ui.components.AffordabilitySimulatorSheet(
+            currentScore = state.score?.totalScore ?: 85,
+            onDismiss = { showSimulatorSheet = false },
+            onAddGoal = { title, targetAmt ->
+                showSimulatorSheet = false
+                onNavigateToCoach()
+            }
+        )
     }
 }

@@ -1,39 +1,35 @@
-# Walkthrough - MoneyMind AI Comprehensive Feature & UI Documentation
+# Walkthrough - MoneyMind AI Complete Feature & Architecture Implementation
 
-## Summary of Latest Updates & Architecture Improvements
+## Summary of All Implemented Features
 
-### 1. Restored Baseline Financial Health Score Gauge Card (`HomeViewModel.kt` & `HomeScreen.kt`)
-- Computed a baseline **Financial Health Score** from the user's saved onboarding setup responses (Salary, Emergency Fund, Health Cover, Term Cover, Monthly Loan EMIs) on Day 1.
-- Restored the **Hero Score Gauge Card** (arc gauge with score `78`/`85`, status badge, and *"Tap for full 5-factor score breakdown"*) at the top of the Home Dashboard starting on Day 1.
+### 1. "Can I Afford This?" Purchase Impact Simulator (`AffordabilitySimulator.kt` & `HomeScreen.kt`)
+- Interactive [`AffordabilitySimulatorSheet.kt`](file:///Users/hareramjha/Developer/MoneyMind/core-ui/src/main/java/com/finly/core/ui/components/AffordabilitySimulator.kt) modal bottom sheet.
+- Added **"Can I Afford This?"** Quick Action Card under the Hero Score Gauge on the Home Screen.
+- Evaluates major purchases (e.g. *MacBook Pro M3 - ₹1,49,900* or *iPhone 16 Pro - ₹1,29,900*) before buying:
+  - **Health Score Drop**: Calculates score change (e.g. `85 -> 74`, `-11 pts`).
+  - **Emergency Reserve Runway**: Calculates remaining liquid months (e.g. `5.8 months -> 3.2 months`).
+  - **Smart Verdict Badge**: Displays `✅ Safe to Purchase`, `⚠️ Moderate Impact (Wait 30 Days)`, or `🚨 High Risk: Drains Emergency Reserve`.
+  - **1-Tap Goal Conversion**: Direct button to convert the simulated item into a long-term Savings Goal.
 
-### 2. Header Branding & "Ask Coach" Button Refinement (`HomeScreen.kt`)
-- Updated top title in [`HomeScreen.kt`](file:///Users/hareramjha/Developer/MoneyMind/feature-home/src/main/java/com/finly/feature/home/HomeScreen.kt) from `"MoneyMind Dashboard"` to **`"MoneyMind AI"`**.
-- Formatted the top-right **"✨ Ask Coach"** button with `maxLines = 1` and tight padding so it fits cleanly on a single line.
+### 2. Life Goal Smart Preset Autofill & Milestone Badges (`GoalsScreen.kt`)
+- Added 1-tap **Smart Preset Chips** in Goal creation dialog (*MacBook Pro M3*, *iPhone 16 Pro*, *Emergency Reserve*, *Electric Vehicle*, *Dream Vacation*).
+- Visual achievement badges on goal progress cards for `25%`, `50%`, `75%`, and `🏆 100% Goal Achieved` milestones.
 
-### 3. Streamlined 4-Tab Bottom Navigation Bar (`MainActivity.kt`)
-- Removed the redundant Profile tab from the bottom navigation bar in [`MainActivity.kt`](file:///Users/hareramjha/Developer/MoneyMind/app/src/main/java/com/finly/app/MainActivity.kt).
-- Bottom Navigation Bar features **4 clean, focused tabs**:
-  1. 🏠 **Home**
-  2. 📊 **Insights**
-  3. 🎯 **Goals**
-  4. ✨ **Coach**
+### 3. AI Coach High-Intent Prompt Pills (`CoachScreen.kt` & `CoachViewModel.kt`)
+- 1-tap question pills above the chat box (`💡 Can I afford a MacBook Pro?`, `📉 Why did my score drop?`, `✂️ Which subscription should I cancel?`).
+- Streams real-time answers from **Google Gemini 3.6 Flash**.
 
-### 4. Top-Left Profile Icon Button Across All Core Screens
-- Added a top action row with a **Top-Left Profile Button (`👤`)** on `HomeScreen`, `InsightsScreen`, `GoalsScreen`, and `CoachScreen`.
-- Tapping the profile button on any screen opens the **Financial Vault Data** editor.
+### 4. Vector App Launcher Icon Asset (`ic_launcher_foreground.xml`)
+- Upgraded [`ic_launcher_foreground.xml`](file:///Users/hareramjha/Developer/MoneyMind/app/src/main/res/drawable/ic_launcher_foreground.xml) with the **Hastradar Financial AI Emblem**:
+  - **Hastradar Pulse Rings**: Cyan & Violet gradient concentric orbital arcs.
+  - **Upward Financial Growth Arrow**: Emerald green trendline.
+  - **AI Spark**: Glowing purple star at top center.
 
-### 5. Editable Financial Vault Data Screen (`ProfileScreen.kt` & `ProfileViewModel.kt`)
-- Displays all setup responses (Salary, Emergency Fund, Health Cover, Term Cover, EMIs) with inline **`[Edit]`** buttons.
-- Users can view and update any setup figure anytime **without having to re-run the onboarding questionnaire**.
+### 5. Guaranteed Animated Splash Screen Flow (`SplashScreen.kt` & `MainActivity.kt`)
+- `MainActivity` starts at `NavScreen.Splash.route` on every app launch.
+- Displays animated Hastradar Emblem, company attribution (`BY HASTRADAR`), and official tagline:
+  > *"Understand your money. Improve your future."*
 
-### 6. Single-Time Setup Questionnaire Persistence (`UserPreferencesRepositoryImpl.kt`)
-- Setup responses are stored in Android `SharedPreferences` via `UserPreferencesRepository`.
-- Onboarding runs on first launch and routes directly to `HomeScreen` on all subsequent app launches.
-
-### 7. Native Biometric App Lock (`BiometricAuthHelper.kt` & `MainActivity.kt`)
-- Integrated `androidx.biometric.BiometricPrompt`.
-- Protects vault data with fingerprint, face unlock, or device PIN.
-- App launch gate presents a secure lock screen overlay until authentication succeeds.
-
-### 8. 14-Day Free Trial Default (`SubscriptionTier.kt` & `ProfileScreen.kt`)
-- Initial plan status defaults to **14-Day Free Trial (Full Access)**.
+### 6. Clean Back Button App Exit (`HomeScreen.kt`)
+- Added `BackHandler { (context as? Activity)?.finish() }` in [`HomeScreen.kt`](file:///Users/hareramjha/Developer/MoneyMind/feature-home/src/main/java/com/finly/feature/home/HomeScreen.kt).
+- Pressing the System Back button from `HomeScreen` **closes/exits the application cleanly** instead of popping backwards in navigation history.

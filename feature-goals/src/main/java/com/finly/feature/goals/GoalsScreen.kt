@@ -53,6 +53,7 @@ import com.finly.core.ui.theme.AccentPurple
 import com.finly.core.ui.theme.CardNavy
 import com.finly.core.ui.theme.DeepNavy
 import com.finly.core.ui.theme.PrimaryIndigo
+import com.finly.core.ui.theme.ScoreExcellent
 import com.finly.core.ui.theme.TextMutedDark
 import com.finly.core.ui.theme.TextSecondaryDark
 import java.util.UUID
@@ -204,7 +205,32 @@ fun GoalsScreen(
                             )
                         }
 
-                        Spacer(modifier = Modifier.height(14.dp))
+                        val milestoneText = when {
+                            goal.progressPercentage >= 100.0 -> "🏆 GOAL ACHIEVED!"
+                            goal.progressPercentage >= 75.0 -> "🔥 75% Milestone Reached"
+                            goal.progressPercentage >= 50.0 -> "⚡ 50% Milestone Reached"
+                            goal.progressPercentage >= 25.0 -> "🌱 25% Milestone Reached"
+                            else -> null
+                        }
+
+                        milestoneText?.let { badge ->
+                            Spacer(modifier = Modifier.height(6.dp))
+                            Box(
+                                modifier = Modifier
+                                    .clip(RoundedCornerShape(6.dp))
+                                    .background(if (goal.progressPercentage >= 100.0) ScoreExcellent else PrimaryIndigo.copy(alpha = 0.25f))
+                                    .padding(horizontal = 8.dp, vertical = 3.dp)
+                            ) {
+                                Text(
+                                    text = badge,
+                                    style = MaterialTheme.typography.labelSmall,
+                                    color = Color.White,
+                                    fontWeight = FontWeight.Bold
+                                )
+                            }
+                        }
+
+                        Spacer(modifier = Modifier.height(12.dp))
 
                         LinearProgressIndicator(
                             progress = { goal.progressPercentage / 100f },
@@ -269,6 +295,14 @@ fun GoalsScreen(
     }
 
     if (showAddGoalDialog) {
+        val smartPresets = listOf(
+            Pair("MacBook Pro M3", "149900"),
+            Pair("iPhone 16 Pro", "129900"),
+            Pair("Emergency Reserve", "180000"),
+            Pair("Electric Vehicle", "120000"),
+            Pair("Dream Vacation", "75000")
+        )
+
         AlertDialog(
             onDismissRequest = { showAddGoalDialog = false },
             containerColor = CardNavy,
@@ -283,22 +317,25 @@ fun GoalsScreen(
             text = {
                 Column {
                     Text(
-                        text = "Quick Presets:",
+                        text = "Smart Presets (Tap to Autofill):",
                         style = MaterialTheme.typography.labelMedium,
                         color = TextMutedDark
                     )
                     Spacer(modifier = Modifier.height(6.dp))
                     LazyRow(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-                        items(presetTitles) { preset ->
+                        items(smartPresets) { (pTitle, pAmount) ->
                             Box(
                                 modifier = Modifier
                                     .clip(RoundedCornerShape(12.dp))
                                     .background(Color(0xFF2E365C))
-                                    .clickable { newGoalTitle = preset }
+                                    .clickable {
+                                        newGoalTitle = pTitle
+                                        newTargetAmount = pAmount
+                                    }
                                     .padding(horizontal = 10.dp, vertical = 6.dp)
                             ) {
                                 Text(
-                                    text = preset,
+                                    text = pTitle,
                                     style = MaterialTheme.typography.labelMedium,
                                     color = Color.White
                                 )
