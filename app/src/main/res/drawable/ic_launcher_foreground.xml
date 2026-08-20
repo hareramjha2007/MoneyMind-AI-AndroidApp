@@ -1,0 +1,105 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+
+    <!-- 1. Outer Sweeping Navy-Indigo Top Arc -->
+    <path
+        android:pathData="M 22,54 A 32,32 0 0,1 86,30"
+        android:strokeWidth="7.5"
+        android:strokeLineCap="round">
+        <aapt:attr name="android:strokeColor">
+            <gradient
+                android:startX="22"
+                android:startY="54"
+                android:endX="86"
+                android:endY="30"
+                android:type="linear">
+                <item android:color="#FF38BDF8" android:offset="0.0"/>
+                <item android:color="#FF818CF8" android:offset="0.5"/>
+                <item android:color="#FF6366F1" android:offset="1.0"/>
+            </gradient>
+        </aapt:attr>
+    </path>
+
+    <!-- 2. Outer Sweeping Emerald-Cyan Bottom Arc -->
+    <path
+        android:pathData="M 86,54 A 32,32 0 0,1 26,78"
+        android:strokeWidth="7.5"
+        android:strokeLineCap="round">
+        <aapt:attr name="android:strokeColor">
+            <gradient
+                android:startX="86"
+                android:startY="54"
+                android:endX="26"
+                android:endY="78"
+                android:type="linear">
+                <item android:color="#FF10B981" android:offset="0.0"/>
+                <item android:color="#FF06B6D4" android:offset="0.7"/>
+                <item android:color="#FF34D399" android:offset="1.0"/>
+            </gradient>
+        </aapt:attr>
+    </path>
+
+    <!-- 3. Monogram 'H' Left Serif & Crossbar -->
+    <path
+        android:pathData="M 30,34 L 40,34 M 35,34 L 35,74 M 30,74 L 40,74 M 35,54 L 53,54"
+        android:strokeWidth="6.5"
+        android:strokeLineCap="square">
+        <aapt:attr name="android:strokeColor">
+            <gradient
+                android:startX="30"
+                android:startY="34"
+                android:endX="53"
+                android:endY="74"
+                android:type="linear">
+                <item android:color="#FFC7D2FE" android:offset="0.0"/>
+                <item android:color="#FF818CF8" android:offset="1.0"/>
+            </gradient>
+        </aapt:attr>
+    </path>
+
+    <!-- 4. Monogram 'C' Inner Green Curve -->
+    <path
+        android:pathData="M 70,36 A 18,18 0 0,0 52,54 A 18,18 0 0,0 70,72"
+        android:strokeWidth="6"
+        android:strokeLineCap="round">
+        <aapt:attr name="android:strokeColor">
+            <gradient
+                android:startX="52"
+                android:startY="36"
+                android:endX="70"
+                android:endY="72"
+                android:type="linear">
+                <item android:color="#FF34D399" android:offset="0.0"/>
+                <item android:color="#FF059669" android:offset="1.0"/>
+            </gradient>
+        </aapt:attr>
+    </path>
+
+    <!-- 5. Monogram 'S' Teal-Cyan Swirl -->
+    <path
+        android:pathData="M 74,40 C 60,30 52,48 68,54 C 84,60 76,78 60,74"
+        android:strokeWidth="6.5"
+        android:strokeLineCap="round">
+        <aapt:attr name="android:strokeColor">
+            <gradient
+                android:startX="52"
+                android:startY="30"
+                android:endX="84"
+                android:endY="78"
+                android:type="linear">
+                <item android:color="#FF06B6D4" android:offset="0.0"/>
+                <item android:color="#FF38BDF8" android:offset="1.0"/>
+            </gradient>
+        </aapt:attr>
+    </path>
+
+    <!-- AI Sparkle Icon accent top right -->
+    <path
+        android:pathData="M 78,24 L 80,29 L 85,31 L 80,33 L 78,38 L 76,33 L 71,31 L 76,29 Z"
+        android:fillColor="#FFEC4899" />
+
+</vector>
