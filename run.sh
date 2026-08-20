@@ -56,7 +56,10 @@ echo "========================================================"
 
 ./gradlew :app:assembleDebug
 
-APK_PATH="app/build/outputs/apk/debug/app-debug.apk"
+APK_PATH="app/build/outputs/apk/debug/MoneyMindAI-v1.0.0-debug.apk"
+if [ ! -f "$APK_PATH" ]; then
+    APK_PATH="app/build/outputs/apk/debug/app-debug.apk"
+fi
 
 # 3. Install & Launch on emulator
 echo "========================================================"

@@ -25,9 +25,12 @@ import androidx.compose.material.icons.automirrored.rounded.ArrowForward
 import androidx.compose.material.icons.rounded.CheckCircle
 import androidx.compose.material.icons.rounded.HealthAndSafety
 import androidx.compose.material.icons.rounded.Lock
+import androidx.compose.material.icons.rounded.NotificationsActive
 import androidx.compose.material.icons.rounded.Payments
 import androidx.compose.material.icons.rounded.Shield
 import androidx.compose.material.icons.rounded.VolunteerActivism
+import androidx.compose.ui.platform.LocalContext
+import com.finly.core.ui.utils.PermissionUtils
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -261,6 +264,9 @@ fun OnboardingScreen(
 
 @Composable
 fun PrivacyWelcomeStep() {
+    val context = LocalContext.current
+    val isPermissionEnabled = remember { PermissionUtils.isNotificationListenerEnabled(context) }
+
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         com.finly.core.ui.components.HastradarEmblem(size = 56.dp)
 
@@ -280,7 +286,7 @@ fun PrivacyWelcomeStep() {
             fontWeight = FontWeight.Bold
         )
 
-        Spacer(modifier = Modifier.height(14.dp))
+        Spacer(modifier = Modifier.height(10.dp))
 
         Text(
             text = "Understand your money.\nImprove your future.",
@@ -290,7 +296,67 @@ fun PrivacyWelcomeStep() {
             textAlign = TextAlign.Center
         )
 
-        Spacer(modifier = Modifier.height(14.dp))
+        Spacer(modifier = Modifier.height(12.dp))
+
+        // 🔔 1-Tap Notification Listener Permission Prompt Card
+        Card(
+            modifier = Modifier
+                .fillMaxWidth()
+                .clip(RoundedCornerShape(18.dp)),
+            colors = CardDefaults.cardColors(
+                containerColor = if (isPermissionEnabled) Color(0xFF064E3B) else Color(0xFF1E1B4B)
+            )
+        ) {
+            Column(modifier = Modifier.padding(14.dp)) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Icon(
+                        imageVector = if (isPermissionEnabled) Icons.Rounded.CheckCircle else Icons.Rounded.NotificationsActive,
+                        contentDescription = null,
+                        tint = if (isPermissionEnabled) ScoreExcellent else Color(0xFF38BDF8),
+                        modifier = Modifier.size(22.dp)
+                    )
+                    Spacer(modifier = Modifier.width(10.dp))
+                    Column(modifier = Modifier.weight(1f)) {
+                        Text(
+                            text = if (isPermissionEnabled) "Automated Tracking Active" else "Enable Passive Tracking Access",
+                            style = MaterialTheme.typography.titleSmall,
+                            color = Color.White,
+                            fontWeight = FontWeight.Bold
+                        )
+                        Text(
+                            text = if (isPermissionEnabled) "Notification Access is granted & active" else "Grant access to auto-track bank & UPI notifications",
+                            style = MaterialTheme.typography.labelSmall,
+                            color = TextSecondaryDark
+                        )
+                    }
+                }
+
+                if (!isPermissionEnabled) {
+                    Spacer(modifier = Modifier.height(10.dp))
+                    Button(
+                        onClick = {
+                            PermissionUtils.openNotificationListenerSettings(context)
+                        },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(42.dp),
+                        colors = ButtonDefaults.buttonColors(containerColor = PrimaryIndigo),
+                        shape = RoundedCornerShape(12.dp)
+                    ) {
+                        Text(
+                            text = "Enable Access in Settings ⚡",
+                            style = MaterialTheme.typography.labelLarge,
+                            fontWeight = FontWeight.Bold,
+                            color = Color.White
+                        )
+                    }
+                }
+            }
+        }
+
+        Spacer(modifier = Modifier.height(10.dp))
 
         Card(
             modifier = Modifier
@@ -298,7 +364,7 @@ fun PrivacyWelcomeStep() {
                 .clip(RoundedCornerShape(20.dp)),
             colors = CardDefaults.cardColors(containerColor = CardNavy)
         ) {
-            Column(modifier = Modifier.padding(18.dp)) {
+            Column(modifier = Modifier.padding(16.dp)) {
                 PrivacyBullet(
                     title = "🔒 100% Private SQLCipher Vault",
                     body = "Your numbers stay on your phone. Stored in local 256-bit AES encrypted database. Zero cloud syncing."

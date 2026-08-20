@@ -104,6 +104,19 @@ class TransactionParserEngineTest {
     }
 
     @Test
+    fun `parse Axio notification for JIO mobile recharge correctly`() {
+        val message = "ICICI credit (7005) ₹349.00 at JIO Total ₹84,110.93 spent in August Your 76th visit here"
+        val result = parser.parseMessage(message, senderId = "com.walnut.android", packageName = "com.walnut.android")
+
+        assertTrue(result is ParseResult.Success)
+        val tx = (result as ParseResult.Success).transaction
+        assertEquals(349.00, tx.amount, 0.01)
+        assertEquals(TransactionDirection.DEBIT, tx.direction)
+        assertEquals("JIO", tx.merchant)
+        assertEquals("bills", tx.categoryId)
+    }
+
+    @Test
     fun `filter out OTP message completely`() {
         val message = "483920 is your secret OTP for HDFC Bank NetBanking transaction of Rs. 5,000. Do not share with anyone."
         val result = parser.parseMessage(message, senderId = "VM-HDFCBK")

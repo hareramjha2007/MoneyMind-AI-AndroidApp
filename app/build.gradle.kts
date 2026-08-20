@@ -40,12 +40,20 @@ android {
             signingConfig = signingConfigs.getByName("hastradarRelease")
         }
         release {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
+            isShrinkResources = true
             signingConfig = signingConfigs.getByName("hastradarRelease")
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+        }
+    }
+
+    applicationVariants.all {
+        outputs.all {
+            val outputImpl = this as com.android.build.gradle.internal.api.BaseVariantOutputImpl
+            outputImpl.outputFileName = "MoneyMindAI-v${versionName}-${buildType.name}.apk"
         }
     }
     compileOptions {

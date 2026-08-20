@@ -22,6 +22,8 @@ import androidx.compose.material.icons.rounded.AutoAwesome
 import androidx.compose.material.icons.rounded.Calculate
 import androidx.compose.material.icons.rounded.ChevronRight
 import androidx.compose.material.icons.rounded.Insights
+import androidx.compose.material.icons.rounded.NotificationsActive
+import com.finly.core.ui.utils.PermissionUtils
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -136,6 +138,60 @@ fun HomeScreen(
                         color = Color.White,
                         fontWeight = FontWeight.Bold,
                         maxLines = 1
+                    )
+                }
+            }
+        }
+
+        val isPermissionEnabled = remember { PermissionUtils.isNotificationListenerEnabled(context) }
+
+        if (!isPermissionEnabled) {
+            Spacer(modifier = Modifier.height(14.dp))
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(16.dp))
+                    .clickable { PermissionUtils.openNotificationListenerSettings(context) },
+                colors = CardDefaults.cardColors(containerColor = Color(0xFF1E1B4B))
+            ) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(14.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier.weight(1f)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Rounded.NotificationsActive,
+                            contentDescription = null,
+                            tint = Color(0xFF38BDF8),
+                            modifier = Modifier.size(24.dp)
+                        )
+                        Spacer(modifier = Modifier.width(10.dp))
+                        Column {
+                            Text(
+                                text = "Enable Automated Tracking Access",
+                                style = MaterialTheme.typography.titleSmall,
+                                color = Color.White,
+                                fontWeight = FontWeight.Bold
+                            )
+                            Text(
+                                text = "Tap to grant permission for automatic expense tracking",
+                                style = MaterialTheme.typography.labelSmall,
+                                color = TextSecondaryDark
+                            )
+                        }
+                    }
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text(
+                        text = "Enable ⚡",
+                        style = MaterialTheme.typography.labelLarge,
+                        color = PrimaryIndigo,
+                        fontWeight = FontWeight.ExtraBold
                     )
                 }
             }

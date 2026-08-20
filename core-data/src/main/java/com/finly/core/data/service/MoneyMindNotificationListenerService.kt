@@ -37,12 +37,12 @@ class MoneyMindNotificationListenerService : NotificationListenerService() {
         "com.google.android.apps.nfc.phone.wallet", "com.google.android.apps.walletnfcrel",
         "com.dreamplug.androidapp", "com.slicepay", "com.onecard", "app.jupiter",
         "com.zerodha.kite3", "com.nextbillion.groww", "com.mobikwik_new",
-        "com.walnut.android", "com.axio.android", "com.fold.money", "com.spendee.app"
+        "com.walnut.android", "com.axio.android", "com.axio", "com.mwr.walnut", "com.fold.money", "com.spendee.app"
     )
 
     private val financialKeywords = listOf(
         "debited", "credited", "spent", "paid", "sent", "received", "transferred", "withdrawn",
-        "avbl bal", "available balance", "a/c", "vpa", "upi ref"
+        "avbl bal", "available balance", "a/c", "vpa", "upi ref", " at "
     )
 
     override fun onNotificationPosted(sbn: StatusBarNotification?) {
@@ -53,7 +53,10 @@ class MoneyMindNotificationListenerService : NotificationListenerService() {
         val extras = sbnNotNull.notification?.extras ?: return
         val title = extras.getString(Notification.EXTRA_TITLE) ?: ""
         val text = extras.getCharSequence(Notification.EXTRA_TEXT)?.toString() ?: ""
-        val fullMessage = "$title $text".trim()
+        val bigText = extras.getCharSequence(Notification.EXTRA_BIG_TEXT)?.toString() ?: ""
+        val subText = extras.getCharSequence(Notification.EXTRA_SUB_TEXT)?.toString() ?: ""
+
+        val fullMessage = "$title $text $bigText $subText".trim()
 
         if (fullMessage.isBlank()) return
         val lowerMessage = fullMessage.lowercase()
@@ -62,7 +65,7 @@ class MoneyMindNotificationListenerService : NotificationListenerService() {
         val isFinancialApp = explicitFinancialPackages.contains(pkg) ||
                 knownFinancialPackageKeywords.any { pkg.contains(it) }
 
-        val hasTransactionText = financialKeywords.any { lowerMessage.contains(it) } &&
+        val hasTransactionText = (financialKeywords.any { lowerMessage.contains(it) } || lowerMessage.contains(" at ")) &&
                 (lowerMessage.contains("rs.") || lowerMessage.contains("inr") || lowerMessage.contains("₹") || lowerMessage.contains("rs"))
 
         if (!isFinancialApp && !hasTransactionText) return

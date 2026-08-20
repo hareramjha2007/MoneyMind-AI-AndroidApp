@@ -12,22 +12,22 @@ class TransactionParserEngine {
     )
 
     private val debitKeywords = listOf(
-        "debited", "paid", "spent", "sent", "transferred to", "withdrawn", "purchase at", "dr"
+        "debited", "paid", "spent", "sent", "transferred to", "withdrawn", "purchase at", "dr", "at "
     )
 
     private val creditKeywords = listOf(
-        "credited", "received", "deposited", "refund", "cashback", "cr"
+        "credited", "credited with", "received", "deposited", "refund", "cashback", "cr"
     )
 
-    // Regex for amount: e.g. Rs. 1,250.00, Rs1250, INR 450.50, Rs.500
+    // Universal Regex for Amount: Matches ₹, Rs., Rs, INR followed by monetary figures
     private val amountPattern = Pattern.compile(
         "(?:Rs\\.?|INR|₹)\\s*([0-9,]+(?:\\.[0-9]{1,2})?)",
         Pattern.CASE_INSENSITIVE
     )
 
-    // Common merchant extractors
-    private val merchantAtPattern = Pattern.compile("at\\s+([A-Za-z0-9\\s\\.\\&\\-]+?)(?:\\s+on|\\s+ref|\\s+via|\\.|\\,|$)", Pattern.CASE_INSENSITIVE)
-    private val merchantToPattern = Pattern.compile("to\\s+([A-Za-z0-9\\s\\.\\&\\-]+?)(?:\\s+on|\\s+ref|\\s+via|\\.|\\,|$)", Pattern.CASE_INSENSITIVE)
+    // Merchant extraction patterns (prefer "at <merchant>" first, then "for <merchant>" / "to <merchant>")
+    private val merchantAtPattern = Pattern.compile("at\\s+([A-Za-z0-9\\s\\.\\&\\-]+?)(?:\\s+using|\\s+for|\\s+on|\\s+ref|\\s+via|\\s+total|\\s+your|\\.|\\,|$)", Pattern.CASE_INSENSITIVE)
+    private val merchantToPattern = Pattern.compile("(?:to|for\\s+purchase\\s+at|for)\\s+([A-Za-z0-9\\s\\.\\&\\-]+?)(?:\\s+using|\\s+for|\\s+on|\\s+ref|\\s+via|\\s+total|\\s+your|\\.|\\,|$)", Pattern.CASE_INSENSITIVE)
 
     fun parseMessage(text: String, senderId: String, packageName: String = "sms"): ParseResult {
         val lowerText = text.lowercase(Locale.ROOT)
@@ -48,15 +48,23 @@ class TransactionParserEngine {
 
         if (amount <= 0.0) return ParseResult.FailedToParse
 
-        // 3. Determine Direction
-        val isDebit = debitKeywords.any { lowerText.contains(it) }
-        val isCredit = creditKeywords.any { lowerText.contains(it) }
+        // 3. Determine Direction (Safely ignoring "credit card" or "ICICI credit (xxxx)" instrument names)
+        val textWithoutInstrument = lowerText
+            .replace(Regex("credit\\s+card\\s*\\([0-9]+\\)"), "")
+            .replace(Regex("credit\\s*\\([0-9]+\\)"), "")
+            .replace("credit card", "")
 
+        var isDebit = debitKeywords.any { textWithoutInstrument.contains(it) }
+        val isCredit = creditKeywords.any { textWithoutInstrument.contains(it) }
+
+        // 🛡️ UNIVERSAL FAIL-SAFE RULE: If a monetary notification comes from a bank/tracker app,
+        // and is not explicitly a credit deposit, DEFAULT TO DEBIT (Expense).
+        // This guarantees that ANY future or unknown notification format is NEVER lost!
         if (!isDebit && !isCredit) {
-            return ParseResult.FailedToParse
+            isDebit = true
         }
 
-        val direction = if (isDebit) TransactionDirection.DEBIT else TransactionDirection.CREDIT
+        val direction = if (isCredit && !isDebit) TransactionDirection.CREDIT else TransactionDirection.DEBIT
 
         // 4. Extract Merchant
         var merchant: String? = null
@@ -71,7 +79,14 @@ class TransactionParserEngine {
         }
 
         // Clean merchant string
-        merchant = merchant?.take(30)
+        merchant = merchant
+            ?.replace(Regex("(?i)\\s+(purchase|using|total|your|spent|visit).*"), "")
+            ?.trim()
+            ?.take(30)
+
+        if (merchant.isNull_blank()) {
+            merchant = null
+        }
 
         // 5. Deduce Category
         val categoryId = deduceCategory(merchant, lowerText)
@@ -84,10 +99,12 @@ class TransactionParserEngine {
                 categoryId = categoryId,
                 rawSenderId = senderId,
                 sourceApp = packageName,
-                confidenceScore = if (merchant != null) 0.95f else 0.80f
+                confidenceScore = if (merchant != null && (isDebit || isCredit)) 0.95f else 0.75f
             )
         )
     }
+
+    private fun String?.isNull_blank(): Boolean = this == null || this.isBlank()
 
     private fun deduceCategory(merchant: String?, fullTextLower: String): String {
         val searchSpace = "${merchant?.lowercase(Locale.ROOT) ?: ""} $fullTextLower"
@@ -98,7 +115,7 @@ class TransactionParserEngine {
             listOf("uber", "ola", "rapido", "shell", "bpcl", "hpcl", "fuel", "petrol", "metro").any { searchSpace.contains(it) } -> "transport"
             listOf("amazon", "flipkart", "myntra", "zudio", "zara", "uniqlo", "shopping").any { searchSpace.contains(it) } -> "shopping"
             listOf("netflix", "spotify", "prime", "youtube", "hotstar", "subscription").any { searchSpace.contains(it) } -> "subscriptions"
-            listOf("bescom", "electricity", "airtel", "jio", "vi", "bill", "recharge", "utility").any { searchSpace.contains(it) } -> "bills"
+            listOf("bescom", "electricity", "airtel", "jio", "vi", "bsnl", "bill", "recharge", "utility", "mobile").any { searchSpace.contains(it) } -> "bills"
             listOf("salary", "payroll", "stipend").any { searchSpace.contains(it) } -> "income"
             else -> "others"
         }
