@@ -16,5 +16,7 @@ data class Transaction(
     val merchant: String?,
     val isRecurring: Boolean = false,
     val confidenceScore: Float = 1.0f,
-    val userCorrected: Boolean = false
+    val userCorrected: Boolean = false,
+    val isExcludedFromExpenses: Boolean = false,
+    val notes: String? = null
 )

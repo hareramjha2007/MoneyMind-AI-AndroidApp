@@ -21,13 +21,17 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.AccountBalance
 import androidx.compose.material.icons.rounded.DeleteForever
+import androidx.compose.material.icons.rounded.CheckCircle
+import androidx.compose.material.icons.rounded.DeleteForever
 import androidx.compose.material.icons.rounded.Edit
 import androidx.compose.material.icons.rounded.Fingerprint
 import androidx.compose.material.icons.rounded.HealthAndSafety
+import androidx.compose.material.icons.rounded.Language
 import androidx.compose.material.icons.rounded.Payments
 import androidx.compose.material.icons.rounded.Shield
 import androidx.compose.material.icons.rounded.Star
 import androidx.compose.material.icons.rounded.VolunteerActivism
+import com.finly.core.ui.utils.CurrencyFormatter
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -81,6 +85,8 @@ fun ProfileScreen(
 
     val financialProfile by viewModel.financialProfile.collectAsState()
     val isBiometricEnabled by viewModel.isBiometricEnabled.collectAsState()
+    val selectedCurrencyCode by viewModel.selectedCurrencyCode.collectAsState()
+    var showCurrencyDialog by remember { mutableStateOf(false) }
 
     var selectedPlan by remember { mutableStateOf(SubscriptionPlan.FREE_TRIAL) }
     var showPaywallSheet by remember { mutableStateOf(false) }
@@ -138,7 +144,7 @@ fun ProfileScreen(
                         )
                         Spacer(modifier = Modifier.width(10.dp))
                         Text(
-                            text = "MoneyMind Premium",
+                            text = "CapitalCurb Premium",
                             style = MaterialTheme.typography.titleMedium,
                             color = Color.White,
                             fontWeight = FontWeight.Bold
@@ -152,7 +158,7 @@ fun ProfileScreen(
                             .padding(horizontal = 10.dp, vertical = 6.dp)
                     ) {
                         Text(
-                            text = if (selectedPlan == SubscriptionPlan.FREE_TRIAL) "FREE TRIAL" else "₹${selectedPlan.monthlyEquivalent}/mo",
+                            text = if (selectedPlan == SubscriptionPlan.FREE_TRIAL) "FREE TRIAL" else "${CurrencyFormatter.formatInr(selectedPlan.monthlyEquivalent.toDouble())}/mo",
                             style = MaterialTheme.typography.labelMedium,
                             color = Color.White,
                             fontWeight = FontWeight.Bold
@@ -166,7 +172,7 @@ fun ProfileScreen(
                     text = if (selectedPlan == SubscriptionPlan.FREE_TRIAL)
                         "Active Plan: 14-Day Free Trial (Full Access). Tap to view subscription plans."
                     else
-                        "Active Plan: ${selectedPlan.title} (₹${selectedPlan.totalPrice}). Tap to change plan.",
+                        "Active Plan: ${selectedPlan.title} (${CurrencyFormatter.formatInr(selectedPlan.totalPrice.toDouble())}). Tap to change plan.",
                     style = MaterialTheme.typography.bodyMedium,
                     color = TextSecondaryDark
                 )
@@ -201,7 +207,7 @@ fun ProfileScreen(
                     icon = Icons.Rounded.Payments,
                     iconTint = AccentPurple,
                     label = "Monthly In-Hand Salary",
-                    value = "₹${financialProfile.monthlyIncome.toInt()}",
+                    value = CurrencyFormatter.formatInr(financialProfile.monthlyIncome),
                     onEditClick = {
                         editingMetricTitle = "Monthly In-Hand Salary"
                         editValueInput = financialProfile.monthlyIncome.toInt().toString()
@@ -214,7 +220,7 @@ fun ProfileScreen(
                     icon = Icons.Rounded.Shield,
                     iconTint = Color(0xFF06B6D4),
                     label = "Emergency Cash Reserves",
-                    value = "₹${financialProfile.emergencyFundAmount.toInt()}",
+                    value = CurrencyFormatter.formatInr(financialProfile.emergencyFundAmount),
                     onEditClick = {
                         editingMetricTitle = "Emergency Cash Reserves"
                         editValueInput = financialProfile.emergencyFundAmount.toInt().toString()
@@ -227,7 +233,7 @@ fun ProfileScreen(
                     icon = Icons.Rounded.HealthAndSafety,
                     iconTint = ScoreExcellent,
                     label = "Health Insurance Cover",
-                    value = if (financialProfile.hasHealthInsurance) "₹${financialProfile.healthInsuranceCover.toInt()}" else "No Policy",
+                    value = if (financialProfile.hasHealthInsurance) CurrencyFormatter.formatInr(financialProfile.healthInsuranceCover) else "No Policy",
                     onEditClick = {
                         editingMetricTitle = "Health Insurance Cover"
                         editValueInput = financialProfile.healthInsuranceCover.toInt().toString()
@@ -240,7 +246,7 @@ fun ProfileScreen(
                     icon = Icons.Rounded.VolunteerActivism,
                     iconTint = AccentPurple,
                     label = "Term Life Insurance Cover",
-                    value = if (financialProfile.hasTermInsurance) "₹${financialProfile.termInsuranceCover.toInt()}" else "No Policy",
+                    value = if (financialProfile.hasTermInsurance) CurrencyFormatter.formatInr(financialProfile.termInsuranceCover) else "No Policy",
                     onEditClick = {
                         editingMetricTitle = "Term Life Insurance Cover"
                         editValueInput = financialProfile.termInsuranceCover.toInt().toString()
@@ -253,7 +259,7 @@ fun ProfileScreen(
                     icon = Icons.Rounded.AccountBalance,
                     iconTint = PrimaryIndigo,
                     label = "Monthly Fixed Loan EMIs",
-                    value = "₹${financialProfile.monthlyEmi.toInt()}",
+                    value = CurrencyFormatter.formatInr(financialProfile.monthlyEmi),
                     onEditClick = {
                         editingMetricTitle = "Monthly Fixed Loan EMIs"
                         editValueInput = financialProfile.monthlyEmi.toInt().toString()
@@ -323,6 +329,83 @@ fun ProfileScreen(
                     )
                 }
             }
+        }
+
+        Spacer(modifier = Modifier.height(10.dp))
+
+        // Currency Selector Card
+        Card(
+            modifier = Modifier
+                .fillMaxWidth()
+                .clip(RoundedCornerShape(18.dp))
+                .clickable { showCurrencyDialog = true },
+            colors = CardDefaults.cardColors(containerColor = CardNavy)
+        ) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.weight(1f).padding(end = 8.dp)
+                ) {
+                    Icon(imageVector = Icons.Rounded.Language, contentDescription = null, tint = Color(0xFF00E5FF))
+                    Spacer(modifier = Modifier.width(12.dp))
+                    Column {
+                        Text(text = "App Currency", style = MaterialTheme.typography.bodyLarge, color = Color.White, fontWeight = FontWeight.SemiBold)
+                        Text(text = "Auto-detected by Geo-location or custom", style = MaterialTheme.typography.labelSmall, color = TextMutedDark)
+                    }
+                }
+                Text(
+                    text = CurrencyFormatter.getOption(selectedCurrencyCode).name,
+                    style = MaterialTheme.typography.labelLarge,
+                    color = PrimaryIndigo,
+                    fontWeight = FontWeight.Bold
+                )
+            }
+        }
+
+        if (showCurrencyDialog) {
+            AlertDialog(
+                onDismissRequest = { showCurrencyDialog = false },
+                title = { Text("Select App Currency", color = Color.White, fontWeight = FontWeight.Bold) },
+                text = {
+                    Column {
+                        CurrencyFormatter.supportedCurrencies.forEach { option ->
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .clickable {
+                                        viewModel.updateCurrency(option.code)
+                                        showCurrencyDialog = false
+                                        Toast.makeText(context, "Currency set to ${option.name}", Toast.LENGTH_SHORT).show()
+                                    }
+                                    .padding(vertical = 12.dp, horizontal = 8.dp),
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Text(
+                                    text = option.name,
+                                    color = if (option.code == selectedCurrencyCode) PrimaryIndigo else Color.White,
+                                    fontWeight = if (option.code == selectedCurrencyCode) FontWeight.Bold else FontWeight.Normal
+                                )
+                                if (option.code == selectedCurrencyCode) {
+                                    Icon(imageVector = Icons.Rounded.CheckCircle, contentDescription = null, tint = PrimaryIndigo)
+                                }
+                            }
+                        }
+                    }
+                },
+                confirmButton = {
+                    androidx.compose.material3.TextButton(onClick = { showCurrencyDialog = false }) {
+                        Text("Close", color = TextMutedDark)
+                    }
+                },
+                containerColor = CardNavy
+            )
         }
 
         Spacer(modifier = Modifier.height(20.dp))

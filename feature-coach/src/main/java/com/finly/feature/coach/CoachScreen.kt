@@ -101,7 +101,7 @@ fun CoachScreen(
             Spacer(modifier = Modifier.width(8.dp))
             Column {
                 Text(
-                    text = "MoneyMind AI Coach",
+                    text = "CapitalCurb AI Coach",
                     style = MaterialTheme.typography.titleLarge,
                     color = Color.White,
                     fontWeight = FontWeight.Bold

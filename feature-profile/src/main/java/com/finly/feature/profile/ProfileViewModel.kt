@@ -29,9 +29,18 @@ class ProfileViewModel @Inject constructor(
     private val _isBiometricEnabled = MutableStateFlow(userPreferencesRepository.isBiometricEnabled())
     val isBiometricEnabled: StateFlow<Boolean> = _isBiometricEnabled.asStateFlow()
 
+    private val _selectedCurrencyCode = MutableStateFlow(userPreferencesRepository.getCurrencyCode())
+    val selectedCurrencyCode: StateFlow<String> = _selectedCurrencyCode.asStateFlow()
+
     fun updateProfile(updated: UserFinancialProfile) {
         userPreferencesRepository.saveUserFinancialProfile(updated)
         _financialProfile.value = updated
+    }
+
+    fun updateCurrency(code: String) {
+        userPreferencesRepository.setCurrencyCode(code)
+        com.finly.core.ui.utils.CurrencyFormatter.currentCurrencyCode = code
+        _selectedCurrencyCode.value = code
     }
 
     fun setBiometricEnabled(enabled: Boolean) {

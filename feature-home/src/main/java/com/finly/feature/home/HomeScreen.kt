@@ -52,6 +52,7 @@ import com.finly.core.ui.theme.DeepNavy
 import com.finly.core.ui.theme.PrimaryIndigo
 import com.finly.core.ui.theme.TextMutedDark
 import com.finly.core.ui.theme.TextSecondaryDark
+import com.finly.core.ui.utils.CurrencyFormatter
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.ui.platform.LocalContext
@@ -104,7 +105,7 @@ fun HomeScreen(
                 Spacer(modifier = Modifier.width(8.dp))
                 Column {
                     Text(
-                        text = "MoneyMind AI",
+                        text = "CapitalCurb AI",
                         style = MaterialTheme.typography.titleLarge,
                         color = Color.White,
                         fontWeight = FontWeight.Bold
@@ -328,7 +329,7 @@ fun HomeScreen(
                     Spacer(modifier = Modifier.height(10.dp))
 
                     Text(
-                        text = "₹${topGoal.currentAmount.toInt()} of ₹${topGoal.targetAmount.toInt()} saved",
+                        text = "${CurrencyFormatter.formatInr(topGoal.currentAmount)} of ${CurrencyFormatter.formatInr(topGoal.targetAmount)} saved",
                         style = MaterialTheme.typography.labelMedium,
                         color = TextSecondaryDark
                     )

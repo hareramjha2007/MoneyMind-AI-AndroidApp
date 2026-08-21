@@ -97,7 +97,7 @@ fun SplashScreen(
 
     LaunchedEffect(Unit) {
         startAnimation = true
-        delay(2800)
+        delay(2000)
         onSplashFinished()
     }
 
@@ -152,7 +152,7 @@ fun SplashScreen(
                 modifier = Modifier.alpha(alphaState)
             ) {
                 Text(
-                    text = "MoneyMind AI",
+                    text = "CapitalCurb AI",
                     style = MaterialTheme.typography.displayMedium,
                     color = Color.White,
                     fontWeight = FontWeight.ExtraBold,

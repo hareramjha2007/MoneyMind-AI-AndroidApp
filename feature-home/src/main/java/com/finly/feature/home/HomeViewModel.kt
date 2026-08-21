@@ -122,7 +122,7 @@ class HomeViewModel @Inject constructor(
                 } else {
                     listOf(
                         "No bank notifications parsed yet",
-                        "MoneyMind AI will automatically track expenses as notifications arrive",
+                        "CapitalCurb AI will automatically track expenses as notifications arrive",
                         "Tap top-left Profile icon (👤) or Goals tab to manage your baseline targets"
                     )
                 }
@@ -131,7 +131,7 @@ class HomeViewModel @Inject constructor(
                     if (primaryGoal != null) "Savings rate is steady at ${Math.round(savingsRatePct)}%. Track your ${primaryGoal.title} goal progress in the Goals tab."
                     else "Savings rate: ${Math.round(savingsRatePct)}%. Tap Goals tab to set your first savings target."
                 } else {
-                    "Welcome to MoneyMind AI! Based on your setup profile, your baseline health score is ${computedScore.totalScore}/100. Enable notification listener to auto-track expenses."
+                    "Welcome to CapitalCurb AI! Based on your setup profile, your baseline health score is ${computedScore.totalScore}/100. Enable notification listener to auto-track expenses."
                 }
 
                 _uiState.value = HomeUiState(

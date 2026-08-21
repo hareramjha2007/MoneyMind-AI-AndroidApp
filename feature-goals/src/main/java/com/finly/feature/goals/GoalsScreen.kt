@@ -61,18 +61,23 @@ import java.util.UUID
 import androidx.compose.material.icons.rounded.AccountCircle
 import androidx.compose.material3.IconButton
 
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.compose.runtime.collectAsState
+import com.finly.core.ui.utils.CurrencyFormatter
+
 @Composable
 fun GoalsScreen(
-    onNavigateToProfile: () -> Unit = {}
+    onNavigateToProfile: () -> Unit = {},
+    viewModel: GoalsViewModel = hiltViewModel()
 ) {
+    val goals by viewModel.goals.collectAsState()
+
     var selectedGoalForTip by remember { mutableStateOf<Goal?>(null) }
     var showAddGoalDialog by remember { mutableStateOf(false) }
 
     var newGoalTitle by remember { mutableStateOf("") }
     var newTargetAmount by remember { mutableStateOf("150000") }
     var newCurrentAmount by remember { mutableStateOf("25000") }
-
-    val goals = remember { mutableStateListOf<Goal>() }
 
     val presetTitles = listOf("Emergency Reserve", "New Bike", "iPhone 16 Pro", "House Down Payment")
 
@@ -249,12 +254,12 @@ fun GoalsScreen(
                             horizontalArrangement = Arrangement.SpaceBetween
                         ) {
                             Text(
-                                text = "Saved: ₹${goal.currentAmount.toInt()}",
+                                text = "Saved: ${CurrencyFormatter.formatInr(goal.currentAmount)}",
                                 style = MaterialTheme.typography.labelMedium,
                                 color = TextSecondaryDark
                             )
                             Text(
-                                text = "Target: ₹${goal.targetAmount.toInt()}",
+                                text = "Target: ${CurrencyFormatter.formatInr(goal.targetAmount)}",
                                 style = MaterialTheme.typography.labelMedium,
                                 color = TextMutedDark
                             )
@@ -403,7 +408,7 @@ fun GoalsScreen(
                         val target = newTargetAmount.toDoubleOrNull() ?: 100000.0
                         val current = newCurrentAmount.toDoubleOrNull() ?: 0.0
 
-                        goals.add(
+                        viewModel.addGoal(
                             Goal(
                                 id = UUID.randomUUID().toString(),
                                 title = title,

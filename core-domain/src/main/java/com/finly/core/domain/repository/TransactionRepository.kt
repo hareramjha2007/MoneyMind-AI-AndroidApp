@@ -11,6 +11,7 @@ interface TransactionRepository {
     suspend fun insertTransaction(transaction: Transaction)
     suspend fun insertTransactions(transactions: List<Transaction>)
     suspend fun updateCategory(transactionId: String, newCategoryId: String)
+    suspend fun updateTransactionDetails(id: String, categoryId: String, isExcludedFromExpenses: Boolean, notes: String?)
     suspend fun deleteTransaction(id: String)
     suspend fun deleteAllTransactions()
     suspend fun clearAllLocalData()

@@ -62,6 +62,7 @@ import com.finly.core.ui.theme.PrimaryIndigo
 import com.finly.core.ui.theme.ScoreExcellent
 import com.finly.core.ui.theme.TextMutedDark
 import com.finly.core.ui.theme.TextSecondaryDark
+import com.finly.core.ui.utils.CurrencyFormatter
 
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.finly.core.domain.model.UserFinancialProfile
@@ -273,7 +274,7 @@ fun PrivacyWelcomeStep() {
         Spacer(modifier = Modifier.height(8.dp))
 
         Text(
-            text = "MoneyMind AI",
+            text = "CapitalCurb AI",
             style = MaterialTheme.typography.headlineMedium,
             color = Color.White,
             fontWeight = FontWeight.Bold
@@ -413,7 +414,7 @@ fun PrivacyBullet(title: String, body: String) {
 
 @Composable
 fun SalaryQuestionStep(incomeInput: String, onIncomeChange: (String) -> Unit) {
-    val presets = listOf("₹50,000", "₹85,000", "₹1,20,000", "₹2,00,000", "₹3,50,000")
+    val presets = listOf(50000.0, 85000.0, 120000.0, 200000.0, 350000.0)
 
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         Icon(
@@ -448,8 +449,8 @@ fun SalaryQuestionStep(incomeInput: String, onIncomeChange: (String) -> Unit) {
             horizontalArrangement = Arrangement.spacedBy(8.dp),
             modifier = Modifier.fillMaxWidth()
         ) {
-            items(presets) { preset ->
-                val numeric = preset.replace("₹", "").replace(",", "")
+            items(presets) { presetVal ->
+                val numeric = presetVal.toInt().toString()
                 val isSelected = incomeInput == numeric
                 Box(
                     modifier = Modifier
@@ -459,7 +460,7 @@ fun SalaryQuestionStep(incomeInput: String, onIncomeChange: (String) -> Unit) {
                         .padding(horizontal = 14.dp, vertical = 10.dp)
                 ) {
                     Text(
-                        text = preset,
+                        text = CurrencyFormatter.formatInr(presetVal),
                         style = MaterialTheme.typography.labelLarge,
                         color = Color.White,
                         fontWeight = FontWeight.Bold
@@ -495,7 +496,7 @@ fun EmergencyFundStep(
     fundInput: String,
     onFundInputChange: (String) -> Unit
 ) {
-    val presets = listOf("₹1,00,000", "₹2,40,000", "₹3,00,000", "₹5,00,000")
+    val presets = listOf(100000.0, 240000.0, 300000.0, 500000.0)
 
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         Icon(
@@ -578,8 +579,8 @@ fun EmergencyFundStep(
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
                 modifier = Modifier.fillMaxWidth()
             ) {
-                items(presets) { preset ->
-                    val numeric = preset.replace("₹", "").replace(",", "")
+                items(presets) { presetVal ->
+                    val numeric = presetVal.toInt().toString()
                     val isSelected = fundInput == numeric
                     Box(
                         modifier = Modifier
@@ -589,7 +590,7 @@ fun EmergencyFundStep(
                             .padding(horizontal = 14.dp, vertical = 10.dp)
                     ) {
                         Text(
-                            text = preset,
+                            text = CurrencyFormatter.formatInr(presetVal),
                             style = MaterialTheme.typography.labelLarge,
                             color = Color.White,
                             fontWeight = FontWeight.Bold
@@ -848,7 +849,7 @@ fun TermInsuranceStep(
 
 @Composable
 fun EmiObligationsStep(emiInput: String, onEmiChange: (String) -> Unit) {
-    val presets = listOf("₹0 (Debt Free)", "₹10,000", "₹25,000", "₹50,000")
+    val presets = listOf(0.0, 10000.0, 25000.0, 50000.0)
 
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         Text(
@@ -874,14 +875,10 @@ fun EmiObligationsStep(emiInput: String, onEmiChange: (String) -> Unit) {
             horizontalArrangement = Arrangement.spacedBy(8.dp),
             modifier = Modifier.fillMaxWidth()
         ) {
-            items(presets) { preset ->
-                val numeric = when (preset) {
-                    "₹0 (Debt Free)" -> "0"
-                    "₹10,000" -> "10000"
-                    "₹25,000" -> "25000"
-                    else -> "50000"
-                }
+            items(presets) { presetVal ->
+                val numeric = presetVal.toInt().toString()
                 val isSelected = emiInput == numeric
+                val labelText = if (presetVal == 0.0) "Debt Free (${CurrencyFormatter.formatInr(0.0)})" else CurrencyFormatter.formatInr(presetVal)
                 Box(
                     modifier = Modifier
                         .clip(RoundedCornerShape(14.dp))
@@ -890,7 +887,7 @@ fun EmiObligationsStep(emiInput: String, onEmiChange: (String) -> Unit) {
                         .padding(horizontal = 14.dp, vertical = 10.dp)
                 ) {
                     Text(
-                        text = preset,
+                        text = labelText,
                         style = MaterialTheme.typography.labelLarge,
                         color = Color.White,
                         fontWeight = FontWeight.Bold,

@@ -53,7 +53,7 @@ android {
     applicationVariants.all {
         outputs.all {
             val outputImpl = this as com.android.build.gradle.internal.api.BaseVariantOutputImpl
-            outputImpl.outputFileName = "MoneyMindAI-v${versionName}-${buildType.name}.apk"
+            outputImpl.outputFileName = "CapitalCurbAI-v${versionName}-${buildType.name}.apk"
         }
     }
     compileOptions {

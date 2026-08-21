@@ -54,4 +54,26 @@ class UserPreferencesRepositoryImpl @Inject constructor(
             monthlyEmi = prefs.getFloat("monthly_emi", 0f).toDouble()
         )
     }
+
+    override fun getCurrencyCode(): String {
+        val saved = prefs.getString("selected_currency_code", null)
+        if (!saved.isNullOrBlank()) return saved
+
+        val country = java.util.Locale.getDefault().country
+        return when (country.uppercase(java.util.Locale.ROOT)) {
+            "IN" -> "INR"
+            "US" -> "USD"
+            "GB" -> "GBP"
+            "DE", "FR", "IT", "ES", "NL", "BE", "AT", "FI", "IE", "PT" -> "EUR"
+            "AE" -> "AED"
+            "CA" -> "CAD"
+            "AU" -> "AUD"
+            "SG" -> "SGD"
+            else -> "INR"
+        }
+    }
+
+    override fun setCurrencyCode(code: String) {
+        prefs.edit().putString("selected_currency_code", code).apply()
+    }
 }

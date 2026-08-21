@@ -51,7 +51,7 @@ class CoachViewModel @Inject constructor(
             id = UUID.randomUUID().toString(),
             sessionId = currentSessionId,
             sender = CoachSender.COACH,
-            text = "Hi Hareram! I'm MoneyMind AI, your personal AI financial coach. I've analyzed your recent bank notifications and savings trends. How can I help you improve your money habits today?",
+            text = "Hi Hareram! I'm CapitalCurb AI, your personal AI financial coach. I've analyzed your recent bank notifications and savings trends. How can I help you improve your money habits today?",
             timestamp = System.currentTimeMillis()
         )
         _uiState.value = _uiState.value.copy(messages = listOf(initialGreeting))

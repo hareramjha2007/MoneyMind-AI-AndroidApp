@@ -42,6 +42,9 @@ import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -58,6 +61,7 @@ import com.finly.core.ui.theme.ScoreNeedsWork
 import com.finly.core.ui.theme.ScoreExcellent
 import com.finly.core.ui.theme.TextMutedDark
 import com.finly.core.ui.theme.TextSecondaryDark
+import com.finly.core.ui.utils.CurrencyFormatter
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -73,6 +77,8 @@ fun InsightsScreen(
 ) {
     val state by viewModel.uiState.collectAsState()
     val score = state.score
+
+    var selectedTransactionForDetail by remember { mutableStateOf<com.finly.core.domain.model.Transaction?>(null) }
 
     Column(
         modifier = Modifier
@@ -128,7 +134,7 @@ fun InsightsScreen(
                         )
                         Spacer(modifier = Modifier.height(4.dp))
                         Text(
-                            text = "₹${state.totalExpenses.toInt()}",
+                            text = CurrencyFormatter.formatInr(state.totalExpenses),
                             style = MaterialTheme.typography.headlineMedium,
                             color = Color.White,
                             fontWeight = FontWeight.Bold
@@ -163,7 +169,23 @@ fun InsightsScreen(
 
         Spacer(modifier = Modifier.height(20.dp))
 
-        // Category Expenses Breakdown Card
+        // Category Expenses Breakdown Card & Donut Chart
+        val categorySpendItems = state.categoryBreakdown.map { cat ->
+            com.finly.core.ui.components.CategorySpendItem(
+                category = com.finly.core.ui.model.TransactionCategory.fromId(cat.category),
+                totalSpend = cat.amount,
+                count = state.transactions.count { it.direction == TransactionDirection.DEBIT && !it.isExcludedFromExpenses && com.finly.core.ui.model.TransactionCategory.fromId(it.categoryId).displayName == com.finly.core.ui.model.TransactionCategory.fromId(cat.category).displayName }
+            )
+        }
+
+        if (categorySpendItems.isNotEmpty()) {
+            com.finly.core.ui.components.CategoryDonutChart(
+                items = categorySpendItems,
+                totalSpend = state.totalExpenses
+            )
+            Spacer(modifier = Modifier.height(20.dp))
+        }
+
         Card(
             modifier = Modifier
                 .fillMaxWidth()
@@ -177,7 +199,7 @@ fun InsightsScreen(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        text = "Expenses Breakdown",
+                        text = "Categories & Spends",
                         style = MaterialTheme.typography.titleMedium,
                         color = Color.White,
                         fontWeight = FontWeight.SemiBold
@@ -192,6 +214,7 @@ fun InsightsScreen(
                 Spacer(modifier = Modifier.height(14.dp))
 
                 state.categoryBreakdown.forEach { cat ->
+                    val catObj = com.finly.core.ui.model.TransactionCategory.fromId(cat.category)
                     Column(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -200,16 +223,26 @@ fun InsightsScreen(
                     ) {
                         Row(
                             modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.SpaceBetween
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
                         ) {
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                Icon(
+                                    imageVector = catObj.icon,
+                                    contentDescription = null,
+                                    tint = catObj.color,
+                                    modifier = Modifier.size(18.dp)
+                                )
+                                Spacer(modifier = Modifier.width(8.dp))
+                                Text(
+                                    text = catObj.displayName,
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    color = Color.White,
+                                    fontWeight = FontWeight.Medium
+                                )
+                            }
                             Text(
-                                text = cat.category,
-                                style = MaterialTheme.typography.bodyMedium,
-                                color = Color.White,
-                                fontWeight = FontWeight.Medium
-                            )
-                            Text(
-                                text = "₹${cat.amount.toInt()} (${cat.percentage.toInt()}%)",
+                                text = "${CurrencyFormatter.formatInr(cat.amount)} (${cat.percentage.toInt()}%)",
                                 style = MaterialTheme.typography.bodyMedium,
                                 color = TextSecondaryDark,
                                 fontWeight = FontWeight.SemiBold
@@ -228,7 +261,7 @@ fun InsightsScreen(
                                     .fillMaxWidth((cat.percentage / 100f).coerceIn(0.02f, 1.0f))
                                     .height(8.dp)
                                     .clip(RoundedCornerShape(4.dp))
-                                    .background(Color(cat.colorHex))
+                                    .background(catObj.color)
                             )
                         }
                     }
@@ -438,7 +471,9 @@ fun InsightsScreen(
                     ) {
                         items(filteredTx) { tx ->
                             Card(
-                                modifier = Modifier.fillMaxWidth(),
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .clickable { selectedTransactionForDetail = tx },
                                 colors = CardDefaults.cardColors(containerColor = CardNavy),
                                 shape = RoundedCornerShape(14.dp)
                             ) {
@@ -487,6 +522,14 @@ fun InsightsScreen(
                                                     color = PrimaryIndigo,
                                                     fontWeight = FontWeight.Medium
                                                 )
+                                                if (tx.isExcludedFromExpenses) {
+                                                    Text(
+                                                        text = " · Excluded",
+                                                        style = MaterialTheme.typography.labelSmall,
+                                                        color = ScoreNeedsWork,
+                                                        fontWeight = FontWeight.Bold
+                                                    )
+                                                }
                                                 Text(
                                                     text = " · ${tx.sourceApp}",
                                                     style = MaterialTheme.typography.labelSmall,
@@ -502,7 +545,7 @@ fun InsightsScreen(
                                     }
 
                                     Text(
-                                        text = "${if (tx.direction == TransactionDirection.CREDIT) "+" else "-"}₹${tx.amount.toInt()}",
+                                        text = "${if (tx.direction == TransactionDirection.CREDIT) "+" else "-"} ${CurrencyFormatter.formatInr(tx.amount)}",
                                         style = MaterialTheme.typography.titleMedium,
                                         color = if (tx.direction == TransactionDirection.CREDIT) ScoreExcellent else Color.White,
                                         fontWeight = FontWeight.Bold
@@ -514,6 +557,19 @@ fun InsightsScreen(
                 }
             }
         }
+    }
+
+    selectedTransactionForDetail?.let { selectedTx ->
+        com.finly.core.ui.components.TransactionDetailSheet(
+            transaction = selectedTx,
+            onSaveDetails = { categoryId, isExcluded, notes ->
+                viewModel.updateTransactionDetails(selectedTx.id, categoryId, isExcluded, notes)
+            },
+            onDeleteTransaction = { id ->
+                viewModel.deleteTransaction(id)
+            },
+            onDismiss = { selectedTransactionForDetail = null }
+        )
     }
 }
 

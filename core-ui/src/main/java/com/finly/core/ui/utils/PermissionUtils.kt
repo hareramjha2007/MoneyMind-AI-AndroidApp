@@ -7,7 +7,7 @@ import android.provider.Settings
 object PermissionUtils {
 
     /**
-     * Checks if the Notification Listener Service permission is granted for MoneyMind AI
+     * Checks if the Notification Listener Service permission is granted for CapitalCurb AI
      */
     fun isNotificationListenerEnabled(context: Context): Boolean {
         val enabledListeners = Settings.Secure.getString(

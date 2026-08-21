@@ -60,6 +60,7 @@ import com.finly.core.ui.theme.ScoreExcellent
 import com.finly.core.ui.theme.ScoreNeedsWork
 import com.finly.core.ui.theme.TextMutedDark
 import com.finly.core.ui.theme.TextSecondaryDark
+import com.finly.core.ui.utils.CurrencyFormatter
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -169,7 +170,7 @@ fun AffordabilitySimulatorSheet(
                             }
                             .padding(horizontal = 10.dp, vertical = 6.dp)
                     ) {
-                        Text(text = presetName, style = MaterialTheme.typography.labelSmall, color = PrimaryIndigo, fontWeight = FontWeight.Bold)
+                        Text(text = "$presetName (${CurrencyFormatter.formatInr(presetPrice)})", style = MaterialTheme.typography.labelSmall, color = PrimaryIndigo, fontWeight = FontWeight.Bold)
                     }
                 }
             }

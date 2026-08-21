@@ -86,6 +86,7 @@ class MainActivity : FragmentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        com.finly.core.ui.utils.CurrencyFormatter.currentCurrencyCode = userPreferencesRepository.getCurrencyCode()
         setContent {
             MoneyMindTheme {
                 MoneyMindAppMainScreen(
@@ -108,7 +109,7 @@ fun MoneyMindAppMainScreen(
         if (userPreferencesRepository.isBiometricEnabled() && !isUnlocked) {
             BiometricAuthHelper.promptBiometric(
                 activity = activity,
-                title = "Unlock MoneyMind AI",
+                title = "Unlock CapitalCurb AI",
                 subtitle = "Verify fingerprint or PIN to access vault",
                 onSuccess = { isUnlocked = true },
                 onError = { }
@@ -136,7 +137,7 @@ fun MoneyMindAppMainScreen(
                 )
                 Spacer(modifier = Modifier.height(16.dp))
                 Text(
-                    text = "MoneyMind Vault Locked",
+                    text = "CapitalCurb Vault Locked",
                     style = MaterialTheme.typography.headlineSmall,
                     color = Color.White,
                     fontWeight = FontWeight.Bold
@@ -153,7 +154,7 @@ fun MoneyMindAppMainScreen(
                     onClick = {
                         BiometricAuthHelper.promptBiometric(
                             activity = activity,
-                            title = "Unlock MoneyMind AI",
+                            title = "Unlock CapitalCurb AI",
                             subtitle = "Verify fingerprint or PIN to access vault",
                             onSuccess = { isUnlocked = true },
                             onError = { }
@@ -165,7 +166,7 @@ fun MoneyMindAppMainScreen(
                         .fillMaxWidth()
                         .height(52.dp)
                 ) {
-                    Text("Unlock MoneyMind AI", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+                    Text("Unlock CapitalCurb AI", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
                 }
             }
         }

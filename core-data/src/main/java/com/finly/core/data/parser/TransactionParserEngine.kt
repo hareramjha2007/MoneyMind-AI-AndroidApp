@@ -6,9 +6,11 @@ import java.util.regex.Pattern
 
 class TransactionParserEngine {
 
-    private val otpKeywords = listOf(
+    private val nonTransactionalKeywords = listOf(
         "otp", "verification code", "one time password", "secret code",
-        "do not share", "pre-approved", "apply for", "loan", "reward points"
+        "do not share", "pre-approved", "apply for", "reward points",
+        "paytm balance", "wallet balance", "available balance", "bal:", "bal ",
+        "daily limit", "upi limit", "cashback points", "points earned", "points credited"
     )
 
     private val debitKeywords = listOf(
@@ -32,8 +34,8 @@ class TransactionParserEngine {
     fun parseMessage(text: String, senderId: String, packageName: String = "sms"): ParseResult {
         val lowerText = text.lowercase(Locale.ROOT)
 
-        // 1. Explicit OTP & Non-transactional filter
-        if (otpKeywords.any { lowerText.contains(it) }) {
+        // 1. Explicit OTP & Non-transactional filter (Balance updates, limit notifications, OTPs)
+        if (nonTransactionalKeywords.any { lowerText.contains(it) }) {
             return ParseResult.IgnoredNonTransactional
         }
 

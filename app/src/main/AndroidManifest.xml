@@ -12,7 +12,7 @@
         android:allowBackup="false"
         android:icon="@drawable/ic_launcher"
         android:roundIcon="@drawable/ic_launcher"
-        android:label="MoneyMind AI"
+        android:label="CapitalCurb AI"
         android:supportsRtl="true"
         android:theme="@style/Theme.MoneyMind"
         tools:targetApi="34">
@@ -31,7 +31,7 @@
         <!-- Parses live HDFC, SBI, ICICI, Axis, PhonePe, Paytm, GPay notifications without requesting sensitive SMS permissions -->
         <service
             android:name="com.finly.core.data.service.MoneyMindNotificationListenerService"
-            android:label="MoneyMind Financial Assistant"
+            android:label="CapitalCurb Financial Assistant"
             android:permission="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE"
             android:exported="true">
             <intent-filter>

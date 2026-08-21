@@ -9,4 +9,6 @@ interface UserPreferencesRepository {
     fun setBiometricEnabled(enabled: Boolean)
     fun saveUserFinancialProfile(profile: UserFinancialProfile)
     fun getUserFinancialProfile(): UserFinancialProfile
+    fun getCurrencyCode(): String
+    fun setCurrencyCode(code: String)
 }

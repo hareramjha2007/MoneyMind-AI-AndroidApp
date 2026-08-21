@@ -41,6 +41,38 @@ class TransactionRepositoryImpl @Inject constructor(
     }
 
     override suspend fun insertTransaction(transaction: Transaction) {
+        val windowMs = 5 * 60 * 1000L // 5 minute time window
+        val startTime = transaction.timestamp - windowMs
+        val endTime = transaction.timestamp + windowMs
+
+        val recentTransactions = dao.getSyncTransactionsBetween(startTime, endTime)
+
+        // 1. Check for exact amount match within 5 minutes across channels (Bank SMS, UPI app, Axio)
+        val existingDuplicate = recentTransactions.firstOrNull { existing ->
+            Math.abs(existing.amount - transaction.amount) < 0.05 &&
+                    existing.direction == transaction.direction.name
+        }
+
+        if (existingDuplicate != null) {
+            // DUPLICATE DETECTED! Enrich existing transaction if new record has better merchant details!
+            val newMerchant = transaction.merchant
+            val existingMerch = existingDuplicate.merchant.orEmpty()
+            if (!newMerchant.isNullOrBlank() && (existingMerch.isBlank() || existingMerch.contains("walnut") || existingMerch.contains("com.") || existingMerch == "others")) {
+                dao.updateMerchantAndCategory(
+                    id = existingDuplicate.id,
+                    merchant = newMerchant,
+                    categoryId = transaction.categoryId
+                )
+            }
+            return // Skip duplicate insertion!
+        }
+
+        // 2. Check for double-calculated sum notifications (e.g. ₹17,672 summary right after 2x ₹8,836 deductions)
+        val sumRecent = recentTransactions.sumOf { it.amount }
+        if (recentTransactions.size >= 2 && Math.abs(sumRecent - transaction.amount) < 0.5) {
+            return // Skip duplicate summary notification!
+        }
+
         dao.insertTransaction(TransactionEntity.fromDomain(transaction))
     }
 
@@ -50,6 +82,10 @@ class TransactionRepositoryImpl @Inject constructor(
 
     override suspend fun updateCategory(transactionId: String, newCategoryId: String) {
         dao.updateCategory(transactionId, newCategoryId)
+    }
+
+    override suspend fun updateTransactionDetails(id: String, categoryId: String, isExcludedFromExpenses: Boolean, notes: String?) {
+        dao.updateTransactionDetails(id, categoryId, isExcludedFromExpenses, notes)
     }
 
     override suspend fun deleteTransaction(id: String) {

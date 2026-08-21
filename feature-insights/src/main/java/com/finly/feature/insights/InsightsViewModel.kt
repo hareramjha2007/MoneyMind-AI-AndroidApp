@@ -69,6 +69,18 @@ class InsightsViewModel @Inject constructor(
         )
     }
 
+    fun updateTransactionDetails(id: String, categoryId: String, isExcludedFromExpenses: Boolean, notes: String?) {
+        viewModelScope.launch {
+            transactionRepository.updateTransactionDetails(id, categoryId, isExcludedFromExpenses, notes)
+        }
+    }
+
+    fun deleteTransaction(id: String) {
+        viewModelScope.launch {
+            transactionRepository.deleteTransaction(id)
+        }
+    }
+
     fun toggleSubscriptionUnwanted(subId: String) {
         val updated = _uiState.value.subscriptions.map { sub ->
             if (sub.id == subId) sub.copy(isUnwanted = !sub.isUnwanted) else sub
@@ -117,13 +129,13 @@ class InsightsViewModel @Inject constructor(
                 val income = transactions.filter { it.amount > 0 && it.direction == TransactionDirection.CREDIT }
                     .sumOf { it.amount }
                 
-                val expenses = transactions.filter { it.amount > 0 && it.direction == TransactionDirection.DEBIT }
+                val expenses = transactions.filter { it.amount > 0 && it.direction == TransactionDirection.DEBIT && !it.isExcludedFromExpenses }
                     .sumOf { it.amount }
 
                 val netSavings = (income - expenses).coerceAtLeast(0.0)
 
                 // Category Expense Breakdown
-                val categoryMap = transactions.filter { it.direction == TransactionDirection.DEBIT }
+                val categoryMap = transactions.filter { it.direction == TransactionDirection.DEBIT && !it.isExcludedFromExpenses }
                     .groupBy { it.categoryId.ifBlank { "Other" } }
                     .mapValues { entry -> entry.value.sumOf { it.amount } }
 

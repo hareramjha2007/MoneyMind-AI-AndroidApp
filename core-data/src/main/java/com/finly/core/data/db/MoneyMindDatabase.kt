@@ -24,7 +24,7 @@ import com.finly.core.data.entity.TransactionEntity
         RecurringPaymentEntity::class,
         CoachMessageEntity::class
     ],
-    version = 1,
+    version = 2,
     exportSchema = false
 )
 abstract class MoneyMindDatabase : RoomDatabase() {

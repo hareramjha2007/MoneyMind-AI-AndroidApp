@@ -46,6 +46,7 @@ import com.finly.core.ui.theme.PrimaryIndigo
 import com.finly.core.ui.theme.ScoreExcellent
 import com.finly.core.ui.theme.TextMutedDark
 import com.finly.core.ui.theme.TextSecondaryDark
+import com.finly.core.ui.utils.CurrencyFormatter
 
 @Composable
 fun PaywallSheet(
@@ -65,7 +66,7 @@ fun PaywallSheet(
             Icon(imageVector = Icons.Rounded.Star, contentDescription = null, tint = AccentPurple)
             Spacer(modifier = Modifier.width(10.dp))
             Text(
-                text = "Upgrade MoneyMind AI",
+                text = "Upgrade CapitalCurb AI",
                 style = MaterialTheme.typography.titleLarge,
                 color = Color.White,
                 fontWeight = FontWeight.Bold
@@ -164,13 +165,13 @@ fun PaywallSheet(
 
                     Column(horizontalAlignment = Alignment.End) {
                         Text(
-                            text = "₹${plan.totalPrice}",
+                            text = CurrencyFormatter.formatInr(plan.totalPrice.toDouble()),
                             style = MaterialTheme.typography.titleLarge,
                             color = Color.White,
                             fontWeight = FontWeight.Bold
                         )
                         Text(
-                            text = "₹${plan.monthlyEquivalent}/mo",
+                            text = "${CurrencyFormatter.formatInr(plan.monthlyEquivalent.toDouble())}/mo",
                             style = MaterialTheme.typography.labelMedium,
                             color = PrimaryIndigo,
                             fontWeight = FontWeight.SemiBold

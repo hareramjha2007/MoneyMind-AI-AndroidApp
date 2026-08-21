@@ -17,7 +17,9 @@ data class TransactionEntity(
     val merchant: String?,
     val isRecurring: Boolean,
     val confidenceScore: Float,
-    val userCorrected: Boolean
+    val userCorrected: Boolean,
+    val isExcludedFromExpenses: Boolean = false,
+    val notes: String? = null
 ) {
     fun toDomain(): Transaction {
         return Transaction(
@@ -31,7 +33,9 @@ data class TransactionEntity(
             merchant = merchant,
             isRecurring = isRecurring,
             confidenceScore = confidenceScore,
-            userCorrected = userCorrected
+            userCorrected = userCorrected,
+            isExcludedFromExpenses = isExcludedFromExpenses,
+            notes = notes
         )
     }
 
@@ -48,7 +52,9 @@ data class TransactionEntity(
                 merchant = domain.merchant,
                 isRecurring = domain.isRecurring,
                 confidenceScore = domain.confidenceScore,
-                userCorrected = domain.userCorrected
+                userCorrected = domain.userCorrected,
+                isExcludedFromExpenses = domain.isExcludedFromExpenses,
+                notes = domain.notes
             )
         }
     }

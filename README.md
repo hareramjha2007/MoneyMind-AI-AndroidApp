@@ -1,8 +1,8 @@
-# MoneyMind AI — by Hastradar
+# CapitalCurb AI — by Hastradar
 
 > **"Understand your money. Improve your future."**
 
-MoneyMind AI is a production-grade, privacy-first Android application that passively understands a user's financial life from bank, UPI, and expense tracker notifications. It calculates a real-time **Financial Health Score (0–100)**, surfaces behavioral spending insights, subscription radar tracking, interactive goal projections, line-by-line expense drill-downs, an interactive 6-step setup questionnaire, "Can I Afford This?" purchase simulator, native biometric app lock, and an AI financial coach — **without ever asking the user to manually log a single expense**.
+CapitalCurb AI is a production-grade, privacy-first Android application that passively understands a user's financial life from bank, UPI, and expense tracker notifications. It calculates a real-time **Financial Health Score (0–100)**, surfaces behavioral spending insights, subscription radar tracking, interactive goal projections, line-by-line expense drill-downs, an interactive 6-step setup questionnaire, "Can I Afford This?" purchase simulator, native biometric app lock, and an AI financial coach — **without ever asking the user to manually log a single expense**.
 
 ---
 

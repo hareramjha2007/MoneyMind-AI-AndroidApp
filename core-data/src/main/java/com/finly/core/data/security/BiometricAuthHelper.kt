@@ -16,7 +16,7 @@ object BiometricAuthHelper {
 
     fun promptBiometric(
         activity: FragmentActivity,
-        title: String = "MoneyMind App Lock",
+        title: String = "CapitalCurb App Lock",
         subtitle: String = "Authenticate to access your encrypted financial vault",
         onSuccess: () -> Unit,
         onError: (String) -> Unit

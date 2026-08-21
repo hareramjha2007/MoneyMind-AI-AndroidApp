@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # ==============================================================================
-# MoneyMind AI — Understand your money. Improve your future.
+# CapitalCurb AI — Understand your money. Improve your future.
 # One-Step Emulator Launch & App Build Script
 # ==============================================================================
 
@@ -12,7 +12,7 @@ export ANDROID_HOME="${ANDROID_HOME:-$HOME/Library/Android/sdk}"
 export PATH="$ANDROID_HOME/emulator:$ANDROID_HOME/platform-tools:$ANDROID_HOME/tools:$ANDROID_HOME/tools/bin:$HOME/.local/bin:$PATH"
 
 echo "========================================================"
-echo "🚀 Starting MoneyMind AI Build & Deployment Pipeline..."
+echo "🚀 Starting CapitalCurb AI Build & Deployment Pipeline..."
 echo "========================================================"
 
 # 1. Check for running devices/emulators
@@ -51,19 +51,19 @@ fi
 
 # 2. Build Debug APK using Gradle wrapper
 echo "========================================================"
-echo "📦 Building MoneyMind AI Debug APK with Gradle..."
+echo "📦 Building CapitalCurb AI Debug APK with Gradle..."
 echo "========================================================"
 
 ./gradlew :app:assembleDebug
 
-APK_PATH="app/build/outputs/apk/debug/MoneyMindAI-v1.0.0-debug.apk"
+APK_PATH="app/build/outputs/apk/debug/CapitalCurbAI-v1.0.0-debug.apk"
 if [ ! -f "$APK_PATH" ]; then
     APK_PATH="app/build/outputs/apk/debug/app-debug.apk"
 fi
 
 # 3. Install & Launch on emulator
 echo "========================================================"
-echo "📲 Deploying MoneyMind AI to Emulator ($RUNNING_DEVICE)..."
+echo "📲 Deploying CapitalCurb AI to Emulator ($RUNNING_DEVICE)..."
 echo "========================================================"
 
 if [ -f "$APK_PATH" ]; then
@@ -72,7 +72,7 @@ if [ -f "$APK_PATH" ]; then
     echo "Launching com.finly.app.MainActivity..."
     adb -s "$RUNNING_DEVICE" shell am start -n "com.finly.app/com.finly.app.MainActivity"
     echo "========================================================"
-    echo "🎉 MoneyMind AI is now running on your emulator!"
+    echo "🎉 CapitalCurb AI is now running on your emulator!"
     echo "========================================================"
 else
     echo "❌ Error: APK artifact not found at $APK_PATH"

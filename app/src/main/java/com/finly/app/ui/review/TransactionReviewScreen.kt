@@ -61,6 +61,7 @@ import com.finly.core.ui.theme.PrimaryIndigo
 import com.finly.core.ui.theme.ScoreExcellent
 import com.finly.core.ui.theme.TextMutedDark
 import com.finly.core.ui.theme.TextSecondaryDark
+import com.finly.core.ui.utils.CurrencyFormatter
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.stateIn
@@ -265,7 +266,7 @@ fun TransactionReviewScreen(
 
                             Column(horizontalAlignment = Alignment.End) {
                                 Text(
-                                    text = "${if (tx.direction == TransactionDirection.DEBIT) "-" else "+"}₹${tx.amount.toInt()}",
+                                    text = "${if (tx.direction == TransactionDirection.DEBIT) "-" else "+"} ${CurrencyFormatter.formatInr(tx.amount)}",
                                     style = MaterialTheme.typography.titleMedium,
                                     color = if (tx.direction == TransactionDirection.DEBIT) Color.White else ScoreExcellent,
                                     fontWeight = FontWeight.Bold
