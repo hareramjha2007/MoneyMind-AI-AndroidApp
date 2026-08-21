@@ -2,6 +2,8 @@ package com.finly.core.data.di
 
 import android.content.Context
 import androidx.room.Room
+import androidx.room.migration.Migration
+import androidx.sqlite.db.SupportSQLiteDatabase
 import com.finly.core.data.dao.CategoryDao
 import com.finly.core.data.dao.CoachMessageDao
 import com.finly.core.data.dao.FinancialHealthScoreDao
@@ -21,6 +23,26 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object DatabaseModule {
+
+    val MIGRATION_1_2 = object : Migration(1, 2) {
+        override fun migrate(db: SupportSQLiteDatabase) {
+            db.execSQL("ALTER TABLE transactions ADD COLUMN isExcludedFromExpenses INTEGER NOT NULL DEFAULT 0")
+            db.execSQL("ALTER TABLE transactions ADD COLUMN notes TEXT")
+        }
+    }
+
+    val MIGRATION_2_3 = object : Migration(2, 3) {
+        override fun migrate(db: SupportSQLiteDatabase) {
+            db.execSQL("ALTER TABLE transactions ADD COLUMN transactionType TEXT NOT NULL DEFAULT 'DEBIT'")
+            db.execSQL("ALTER TABLE transactions ADD COLUMN merchantRaw TEXT")
+            db.execSQL("ALTER TABLE transactions ADD COLUMN merchantNormalized TEXT")
+            db.execSQL("ALTER TABLE transactions ADD COLUMN providerName TEXT NOT NULL DEFAULT 'Bank'")
+            db.execSQL("ALTER TABLE transactions ADD COLUMN accountLast4 TEXT")
+            db.execSQL("ALTER TABLE transactions ADD COLUMN upiId TEXT")
+            db.execSQL("ALTER TABLE transactions ADD COLUMN referenceNumber TEXT")
+            db.execSQL("ALTER TABLE transactions ADD COLUMN rawNotification TEXT NOT NULL DEFAULT ''")
+        }
+    }
 
     @Provides
     @Singleton
@@ -43,7 +65,7 @@ object DatabaseModule {
             "moneymind_encrypted.db"
         )
             .openHelperFactory(factory)
-            .fallbackToDestructiveMigration()
+            .addMigrations(MIGRATION_1_2, MIGRATION_2_3)
             .build()
     }
 

@@ -85,7 +85,15 @@ class MoneyMindNotificationListenerService : NotificationListenerService() {
                         merchant = parsed.merchant,
                         isRecurring = false,
                         confidenceScore = parsed.confidenceScore,
-                        userCorrected = false
+                        userCorrected = false,
+                        transactionType = parsed.transactionType,
+                        merchantRaw = parsed.merchantRaw,
+                        merchantNormalized = parsed.merchantNormalized,
+                        providerName = parsed.providerName,
+                        accountLast4 = parsed.accountLast4,
+                        upiId = parsed.upiId,
+                        referenceNumber = parsed.referenceNumber,
+                        rawNotification = fullMessage
                     )
                     transactionRepository.insertTransaction(transaction)
                 }
